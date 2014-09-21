@@ -14,8 +14,9 @@
 	<script src='lib/jquery-1.7.2.js'></script>
 	<script src="lib/vic.utils.js"></script>
 	<script>
-	var hash = window.location.hash;
-	var queryPath = '../test?cmd=QueryPrint' + hash;
+	var hash = window.location.search;
+    hash = hash.replace('?', '&')
+	var queryPath = '../test?cmd=QueryCard' + hash;
 	var ary_card;
 	var template;
 	
