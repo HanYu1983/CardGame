@@ -4,7 +4,7 @@
 	</head>
 	<style>
 	.root{
-		width:660px;
+		width:100%;
 	}
 	</style>
 	<body>
@@ -34,7 +34,7 @@
 		var temp;
 		var pid = 0;
 		var sid = pid * 9;
-		var eid = sid + 9;
+		var eid = 9999999;
 		for( var i = sid; i < ( eid > ary_card.length ? ary_card.length : eid ); ++i ){
 			card = ary_card[i];
 			temp = template.clone();
