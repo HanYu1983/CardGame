@@ -53,7 +53,7 @@ func (cr *CardRepository) Delete(key int64) {
 
 func (cr *CardRepository) GetAll() []CardPO {
     c := appengine.NewContext(cr.Request)
-    q := datastore.NewQuery(cr.Kind)
+    q := datastore.NewQuery(cr.Kind).Order("Type")
     var cards []CardPO
     keys, err := q.GetAll(c, &cards)
     if err != nil {
