@@ -10,6 +10,7 @@ func init() {
         FrontControl(w, r,
             ActionMap{
                 "CreateCard": CreateCard,
+                "QueryCard": QueryCard,
             },
         )
     }

@@ -14,5 +14,5 @@ type App struct {
 }
 
 func (app *App) GetCardRepository(request *http.Request) ICardRepository {
-    return &CardRepository{Request: request, Kind: "Card2"}
+    return &CardRepository{Request: request, Kind: "Card"}
 }

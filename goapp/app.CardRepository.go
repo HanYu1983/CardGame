@@ -14,7 +14,7 @@ type CardRepository struct {
 func (cr *CardRepository) Create(card CardPO) int64 {
     c := appengine.NewContext(cr.Request)
     key := datastore.NewIncompleteKey(c, cr.Kind, nil)
-    retkey, err := datastore.Put(c, key, card)
+    retkey, err := datastore.Put(c, key, &card)
     if err != nil {
         panic(err.Error())
     }
@@ -48,4 +48,20 @@ func (cr *CardRepository) Delete(key int64) {
     if err != nil {
         panic(err.Error())
     }
+}
+
+func (cr *CardRepository) GetAll() []CardPO {
+    c := appengine.NewContext(cr.Request)
+    q := datastore.NewQuery(cr.Kind)
+    var cards []CardPO
+    keys, err := q.GetAll(c, &cards)
+    if err != nil {
+        panic( err.Error() )
+    }
+    var retcards []CardPO
+    for idx, card := range cards {
+        card.Key = keys[idx].IntID()
+        retcards = append(retcards, card)
+    }
+    return retcards
 }

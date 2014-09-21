@@ -15,6 +15,14 @@ type DefaultResult struct {
     Info interface{}
 }
 
+func Success(info interface{}) DefaultResult {
+    return DefaultResult{Success:true, Info: info}
+}
+
+func NotSuccess(info interface{}) DefaultResult {
+    return DefaultResult{Info: info}
+}
+
 func FrontControl(
     w http.ResponseWriter,
     r *http.Request,
