@@ -56,6 +56,18 @@ func CreateCard(w http.ResponseWriter, r *http.Request) interface{} {
 
 func QueryCard(w http.ResponseWriter, r *http.Request) interface{} {
     var cr ICardRepository = GetApp().GetCardRepository(r)
+    
+    keys := r.Form["key"]
+    if keys != nil {
+        var cards []CardPO
+        for _, k := range keys {
+            ki, _ := strconv.ParseInt(k, 10, 64)
+            card := cr.Read( ki )
+            cards = append(cards, card)
+        }
+        return Success(cards)
+    }
+    
     var cards []CardPO = cr.GetAll()
     return Success(cards)
 }
