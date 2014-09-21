@@ -38,6 +38,7 @@ func FrontControl(
     result := Call(action, cmd, w, r)[0]
     formatResult := result.Interface()
     js, _ := json.Marshal(formatResult)
+    w.Header().Set("Content-Type", "application/json")
     fmt.Fprintf(w, "%s",  js)
 }
 
