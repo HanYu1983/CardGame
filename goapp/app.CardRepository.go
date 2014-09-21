@@ -29,6 +29,7 @@ func (cr *CardRepository) Read(key int64) CardPO {
     if err != nil {
         panic(err.Error())
     }
+    card.Key = key
     return card
 }
 
