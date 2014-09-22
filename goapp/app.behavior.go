@@ -4,6 +4,14 @@ import (
     "net/http"
 )
 
+type IRepository interface {
+    Create(po interface{}) int64
+    Update(key int64, po interface{})
+    Read(key int64) interface{}
+    Delete(key int64)
+    GetAll() []interface{}
+}
+
 type CardPO struct {
     Key int64
     Name string
@@ -22,13 +30,16 @@ type CardPO struct {
 }
 
 type ICardRepository interface {
+    IRepository
+    /*
     Create(card CardPO) int64
     Update(key int64, card CardPO)
     Read(key int64) CardPO
     Delete(key int64)
     GetAll() []CardPO
+    */
 }
 
 type IApp interface {
-    GetCardRepository (r *http.Request) ICardRepository
+    GetCardRepository (r *http.Request) IRepository
 }
