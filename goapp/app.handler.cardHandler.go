@@ -3,7 +3,6 @@ package hello
 import (
     "net/http"
     "strconv"
-    "reflect"
 )
 
 func CreateCard(w http.ResponseWriter, r *http.Request) interface{} {
@@ -51,7 +50,7 @@ func CreateCard(w http.ResponseWriter, r *http.Request) interface{} {
         Weight: weight,
     }
     var cr ICardRepository = GetApp().GetCardRepository(r)
-    key := cr.Create(reflect.ValueOf(card).Interface())
+    key := cr.Create(card)
     return Success(key)
 }
 
@@ -71,4 +70,10 @@ func QueryCard(w http.ResponseWriter, r *http.Request) interface{} {
     
     var cards []interface{} = cr.GetAll()
     return Success(cards)
+}
+
+func CreateCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
+    var cr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
+    cr.Create(CardSuitPO{Name:"test card", CardIds: []int64{213,334}})
+    return Success("haha")
 }

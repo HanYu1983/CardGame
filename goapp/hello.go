@@ -11,6 +11,8 @@ func init() {
             ActionMap{
                 "CreateCard": CreateCard,
                 "QueryCard": QueryCard,
+                
+                "CreateCardSuit": CreateCardSuit,
             },
         )
     }

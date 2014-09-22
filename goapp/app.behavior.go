@@ -4,14 +4,6 @@ import (
     "net/http"
 )
 
-type IRepository interface {
-    Create(po interface{}) int64
-    Update(key int64, po interface{})
-    Read(key int64) interface{}
-    Delete(key int64)
-    GetAll() []interface{}
-}
-
 type CardPO struct {
     Key int64
     Name string
@@ -29,10 +21,21 @@ type CardPO struct {
     Weight int
 }
 
+type CardSuitPO struct {
+    Key int64
+    Name string
+    CardIds []int64
+}
+
 type ICardRepository interface {
     IRepository
 }
 
+type ICardSuitRepository interface {
+    IRepository
+}
+
 type IApp interface {
+    GetCardSuitRepository (r *http.Request) ICardSuitRepository
     GetCardRepository (r *http.Request) ICardRepository
 }
