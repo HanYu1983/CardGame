@@ -31,15 +31,8 @@ type CardPO struct {
 
 type ICardRepository interface {
     IRepository
-    /*
-    Create(card CardPO) int64
-    Update(key int64, card CardPO)
-    Read(key int64) CardPO
-    Delete(key int64)
-    GetAll() []CardPO
-    */
 }
 
 type IApp interface {
-    GetCardRepository (r *http.Request) IRepository
+    GetCardRepository (r *http.Request) ICardRepository
 }
