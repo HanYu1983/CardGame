@@ -20,35 +20,25 @@ func (app *App) GetCardRepository(request *http.Request) IRepository {
                 DefaultRepository{
                     Request: request, 
                     Kind: "Card",
-                    PutFn: func(ctx appengine.Context, key *datastore.Key, po interface{}) int64 {
+                    PutFn: func(ctx appengine.Context, key *datastore.Key, po interface{}) (retkey *datastore.Key, err error) {
                         var card CardPO
-                        retkey, err := datastore.Put(ctx, key, &card)
-                        if err != nil {
-                            panic(err.Error())
-                        }
-                        return retkey.IntID()
+                        return  datastore.Put(ctx, key, &card)
                     },
-                    GetFn: func(ctx appengine.Context, key *datastore.Key) interface{} {
+                    GetFn: func(ctx appengine.Context, key *datastore.Key) (ret interface{}, err error) {
                         var card CardPO
-                        err := datastore.Get(ctx, key, &card)
-                        if err != nil {
-                            panic(err.Error())
-                        }
+                        err = datastore.Get(ctx, key, &card)
                         card.Key = key.IntID()
-                        return card
+                        ret = card
+                        return
                     },
-                    GetAllFn: func(ctx appengine.Context, q *datastore.Query) []interface{} {
+                    GetAllFn: func(ctx appengine.Context, q *datastore.Query) (ret []interface{}, keys []*datastore.Key, err error ) {
                         var cards []CardPO
-                        keys, err := q.GetAll(ctx, &cards)
-                        if err != nil {
-                            panic( err.Error() )
-                        }
-                        var retcards []interface{}
+                        keys, err = q.GetAll(ctx, &cards)
                         for idx, card := range cards {
                             card.Key = keys[idx].IntID()
-                            retcards = append(retcards, card)
+                            ret = append(ret, card)
                         }
-                        return retcards
+                        return
                     },
                 },
             }

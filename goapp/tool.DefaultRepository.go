@@ -9,15 +9,19 @@ import (
 type DefaultRepository struct {
     Kind string
     Request *http.Request
-    PutFn func(ctx appengine.Context, key *datastore.Key, po interface{}) int64
-    GetFn func(ctx appengine.Context, key *datastore.Key) interface{}
-    GetAllFn func(ctx appengine.Context, q *datastore.Query) []interface{}
+    PutFn func(ctx appengine.Context, key *datastore.Key, po interface{}) (retkey *datastore.Key, err error)
+    GetFn func(ctx appengine.Context, key *datastore.Key) (ret interface{}, err error)
+    GetAllFn func(ctx appengine.Context, q *datastore.Query) (ret []interface{}, keys []*datastore.Key, err error )
 }
 
 func (cr *DefaultRepository) Create(po interface{}) int64 {
     c := appengine.NewContext(cr.Request)
-    key := datastore.NewIncompleteKey(c, cr.Kind, nil)
-    return cr.PutFn(c, key, po)
+    key := datastore.NewIncompleteKey(c, cr.Kind, nil)    
+    retkey, err := cr.PutFn(c, key, po)
+    if err != nil {
+        panic(err.Error())
+    }
+    return retkey.IntID()
 }
 
 func (cr *DefaultRepository) Update(key int64, po interface{}){
@@ -28,7 +32,11 @@ func (cr *DefaultRepository) Update(key int64, po interface{}){
 func (cr *DefaultRepository) Read(key int64) interface{}{
     c := appengine.NewContext(cr.Request)
     pKey := datastore.NewKey(c, cr.Kind, "", key, nil)
-    return cr.GetFn(c, pKey)
+    ret, err := cr.GetFn(c, pKey)
+    if err != nil {
+        panic(err.Error())
+    }
+    return ret
 }
 func (cr *DefaultRepository) Delete(key int64){
     c := appengine.NewContext(cr.Request)
@@ -41,5 +49,9 @@ func (cr *DefaultRepository) Delete(key int64){
 func (cr *DefaultRepository) GetAll() []interface{}{
     c := appengine.NewContext(cr.Request)
     q := datastore.NewQuery(cr.Kind)
-    return cr.GetAllFn( c, q )
+    pos, _, err := cr.GetAllFn( c, q )
+    if err != nil {
+        panic( err.Error() )
+    }
+    return pos
 }
