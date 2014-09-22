@@ -73,7 +73,22 @@ func QueryCard(w http.ResponseWriter, r *http.Request) interface{} {
 }
 
 func CreateCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
-    var cr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
-    cr.Create(CardSuitPO{Name:"test card", CardIds: []int64{213,334}})
-    return Success("haha")
+    VerifyParam(r, "name", ParamNotNil())
+    VerifyParam(r, "id", ParamNotNil())
+    
+    name := r.Form["name"][0]
+    idstr := r.Form["id"]
+    
+    var ids []int64
+    for _, v := range idstr {
+        id, err := strconv.ParseInt(v, 10, 64)
+        if err != nil { 
+            panic(err.Error())
+        }
+        ids = append( ids, id )
+    }
+    
+    var cr ICardSuitRepository = GetApp().GetCardSuitRepository(r)    
+    key := cr.Create(CardSuitPO{Name:name, CardIds: ids})
+    return Success(key)
 }
