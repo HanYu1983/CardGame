@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <title>卡組</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    </head>
+    <body>
+        <form action='Page'>
+            <input type=hidden name=cmd value=AddCardSuit>
+            名稱<input name=name><input type=submit value=新增卡組>
+        </form>
+        <table border=1px width="100%">
+            <thead>
+                <tr>
+                    <th>操作</th>
+                    <th width="10%">名稱</th>
+                    <th width="30%">描述</th>
+                    <th width="60%">內容</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .CardSuits}}
+                <tr>
+                    <td><a href="Page?cmd=EditCardSuitPage&key={{.Key}}"><button>編輯</button></a></td>
+                    <td>{{.Name}}</td>
+                    <td>{{.Description}}</td>
+                    <td>
+                        {{with .CardIds}}
+                            {{range .}}
+                                <a href={{.}}>{{.}}</a>
+                            {{end}}
+                        {{end}}
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </body>
+</html>

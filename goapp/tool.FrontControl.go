@@ -23,6 +23,8 @@ func NotSuccess(info interface{}) DefaultResult {
     return DefaultResult{Info: info}
 }
 
+var CustomView = DefaultResult{Info:"__custom_view__"}
+
 func FrontControl(
     w http.ResponseWriter,
     r *http.Request,
@@ -36,10 +38,14 @@ func FrontControl(
     r.ParseForm()
     cmd := GetCommand(r, "nocmd")
     result := Call(action, cmd, w, r)[0]
-    formatResult := result.Interface()
-    js, _ := json.Marshal(formatResult)
-    w.Header().Set("Content-Type", "application/json")
-    fmt.Fprintf(w, "%s",  js)
+    formatResult := result.Interface().(DefaultResult)
+    if formatResult == CustomView {
+        // nothing todo
+    }else{
+        js, _ := json.Marshal(formatResult)
+        w.Header().Set("Content-Type", "application/json")
+        fmt.Fprintf(w, "%s",  js)
+    }
 }
 
 func GetCommand(r *http.Request, defcmd string)(cmd string){

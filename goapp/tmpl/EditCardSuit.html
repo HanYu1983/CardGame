@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>AllCards</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    </head>
+    <body>
+        <form action=''>
+            <input type=submit value=套用>
+            <table width='100%' border=1px>
+                {{with .CardSuit}}
+                <tr><td colspan=2>
+                    名稱<input name=name value={{.Name}}>
+                </td></tr>
+                <tr><td colspan=2>
+                    描述<input name=description value={{.Description}}>
+                </td></tr>
+                {{end}}
+                
+                {{with .Cards}}
+                    {{range .}}
+                <tr>
+                    <td width=30px>
+                        <a href=''><button>刪除</button></a>
+                    </td>
+                    <td>
+                        {{.Key}}<br>
+                        {{.Name}}<br>
+                        {{.Action}}<br>
+                    </td>
+                </tr>
+                    {{end}}
+                {{end}}
+            <table>
+        </form>
+    </body>
+</html>

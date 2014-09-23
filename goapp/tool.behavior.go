@@ -7,3 +7,9 @@ type IRepository interface {
     Delete(key int64)
     GetAll() []interface{}
 }
+
+type ICookieManager interface {
+    GetValue()(bool, string)
+    SetValue(v string)
+    Clear()
+}

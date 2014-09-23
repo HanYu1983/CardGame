@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>Wow</title>
+    </head>
+    <body>
+        <h2>hello {{.UserName}}!</h2>
+        <h3>email</h3>
+        {{range .Emails}}
+            an email {{.}} <br>
+        {{end}}
+        <h3>friends</h3>
+        {{with .Friends}}
+            {{range .}}
+                my friend name is {{.Fname}} <br>
+            {{end}}
+        {{end}}
+    </body>
+</html>

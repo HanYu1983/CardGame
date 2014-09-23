@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-    FrontControl := func(w http.ResponseWriter, r *http.Request){
+    FuncFrontControl := func(w http.ResponseWriter, r *http.Request){
         FrontControl(w, r,
             ActionMap{
                 "CreateCard": CreateCard,
@@ -17,8 +17,21 @@ func init() {
         )
     }
     
+    PageFrontControl := func(w http.ResponseWriter, r *http.Request){
+        FrontControl(w, r,
+            ActionMap{
+                "TestView": TestView,
+                "QueryCardPage": QueryCardPage,
+                "AddCardSuit": AddCardSuit,
+                "QueryCardSuitPage": QueryCardSuitPage,
+                "EditCardSuitPage": EditCardSuitPage,
+            },
+        )
+    }
+    
     http.HandleFunc("/", handler)
-    http.HandleFunc("/test", FrontControl)
+    http.HandleFunc("/Func", FuncFrontControl)
+    http.HandleFunc("/Page", PageFrontControl)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {

@@ -24,6 +24,7 @@ type CardPO struct {
 type CardSuitPO struct {
     Key int64
     Name string
+    Description string
     CardIds []int64
 }
 
