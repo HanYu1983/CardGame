@@ -92,3 +92,17 @@ func EditCardSuitPage(w http.ResponseWriter, r *http.Request) interface{} {
     templateWithFile("query card", "tmpl/EditCardSuit.html").Execute(w, model)
     return CustomView
 }
+
+func ModifyCardWithCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
+    VerifyParam(r, "key", ParamNotNil())
+    VerifyParam(r, "cardId", ParamNotNil())
+    VerifyParam(r, "type", ParamNotNil())
+    ty := r.Form["type"][0]
+    switch ty {
+    case "add":
+        break
+    case "delete":
+        break
+    }
+    return CustomView
+}
