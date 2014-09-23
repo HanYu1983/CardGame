@@ -94,3 +94,24 @@ func CreateCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
     key := cr.Create(CardSuitPO{Name:name, Description:description, CardIds:ids})
     return Success(key)
 }
+
+func PrintCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
+    VerifyParam(r, "cardSuitId", ParamNotNil())
+    VerifyParam(r, "page", ParamNotNil())
+    
+    cardSuitId, _ := strconv.ParseInt(r.Form["cardSuitId"][0], 10, 64)
+    page, _ := strconv.Atoi(r.Form["page"][0])
+    
+    var cr ICardRepository = GetApp().GetCardRepository(r)
+    var csr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
+    
+    cardSuit := csr.Read(cardSuitId).(CardSuitPO)
+    
+    var cards []CardPO
+    for idx, cardId := range cardSuit.CardIds {
+        if idx >= page*9 && idx < page*9+9 {
+            cards = append( cards, cr.Read(cardId).(CardPO) )
+        }
+    }
+    return Success(cards)
+}
