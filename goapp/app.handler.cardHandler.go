@@ -74,12 +74,12 @@ func QueryCard(w http.ResponseWriter, r *http.Request) interface{} {
 
 func CreateCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
     VerifyParam(r, "name", ParamNotNil())
-    VerifyParam(r, "id", ParamNotNil())
+    VerifyParam(r, "id[]", ParamNotNil())
     VerifyParam(r, "description", ParamNotNil())
     
     name := r.Form["name"][0]
     description := r.Form["description"][0]
-    idstr := r.Form["id"]
+    idstr := r.Form["id[]"]
     
     var ids []int64
     for _, v := range idstr {
@@ -93,4 +93,25 @@ func CreateCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
     var cr ICardSuitRepository = GetApp().GetCardSuitRepository(r)    
     key := cr.Create(CardSuitPO{Name:name, Description:description, CardIds:ids})
     return Success(key)
+}
+
+func PrintCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
+    VerifyParam(r, "cardSuitId", ParamNotNil())
+    VerifyParam(r, "page", ParamNotNil())
+    
+    cardSuitId, _ := strconv.ParseInt(r.Form["cardSuitId"][0], 10, 64)
+    page, _ := strconv.Atoi(r.Form["page"][0])
+    
+    var cr ICardRepository = GetApp().GetCardRepository(r)
+    var csr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
+    
+    cardSuit := csr.Read(cardSuitId).(CardSuitPO)
+    
+    var cards []CardPO
+    for idx, cardId := range cardSuit.CardIds {
+        if idx >= page*9 && idx < page*9+9 {
+            cards = append( cards, cr.Read(cardId).(CardPO) )
+        }
+    }
+    return Success(cards)
 }
