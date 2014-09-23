@@ -3,6 +3,7 @@ package hello
 import (
     "net/http"
     "strconv"
+    "strings"
 )
 
 func CreateCard(w http.ResponseWriter, r *http.Request) interface{} {
@@ -61,6 +62,9 @@ func QueryCard(w http.ResponseWriter, r *http.Request) interface{} {
     if keys != nil {
         var cards []CardPO
         for _, k := range keys {
+            if len(strings.TrimSpace(k)) == 0 {
+                continue
+            }
             ki, _ := strconv.ParseInt(k, 10, 64)
             card := cr.Read( ki ).(CardPO)
             cards = append(cards, card)
