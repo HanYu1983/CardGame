@@ -17,12 +17,18 @@
                     <input type=hidden name=key value={{$suitKey}}>
                     <input type=hidden name=type value=none>
                     {{with .CardSuit}}
-                    <tr><td colspan=2>
-                        名稱<input name=name value={{.Name}}>
-                    </td></tr>
-                    <tr><td colspan=2>
-                        描述<input name=description value={{.Description}}>
-                    </td></tr>
+                    <tr>
+                        <td width=5% align="center" valign="middle">名稱</td>
+                        <td>
+                            <input name=name value={{.Name}}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="middle">描述</td>
+                        <td>
+                            <input name=description value={{.Description}}>
+                        </td>
+                    </tr>
                     <tr><td colspan=2>
                         <input type=submit>
                     </td></tr>
@@ -32,30 +38,82 @@
                 
                 {{range .Cards}}
                     <tr>
-                        <td width=30px>
+                        <td align="center" valign="middle">
                             <a href='Page?cmd=ModifyCardWithCardSuit&key={{$suitKey}}&cardId={{.Key}}&type=delete'>X</a>
                         </td>
                         <td>
-                            {{.Key}}<br>
-                            {{.Name}}<br>
-                            {{.Action}}<br>
+                            <table width=100%>
+                                
+                                <tr>
+                                    <td>{{.Name}}</td>
+                                    <td>{{.AtkType}}</td>
+                                    <td>Level:{{.Level}}</td>
+                                    <td>P:{{.Power}}</td>
+                                    <td>M:{{.Magic}}</td>
+                                    <td>W:{{.Weight}}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td colspan=6>{{.Content}}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>{{.Action}}</td>
+                                    <td>{{.ActionCost}}</td>
+                                    <td>{{.Type}}</td>
+                                    <td>{{.Tag}}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </td>
+                                
+                                <tr>
+                                    <td colspan=6>{{.ActionContent}}</td>
+                                </td>
+                                
+                            </table>
                         </td>
                     </tr>
                 {{end}}
                 
                 <tr>
-                    <td colspan=2>所有牌</td>
+                    <td colspan=2 align="center" valign="middle">所有牌</td>
                 </tr>
                 
                 {{range .AllCards}}
                     <tr>
-                        <td width=30px>
+                        <td align="center" valign="middle">
                             <a href='Page?cmd=ModifyCardWithCardSuit&key={{$suitKey}}&cardId={{.Key}}&type=add'>O</a>
                         </td>
-                        <td>
-                            {{.Key}}<br>
-                            {{.Name}}<br>
-                            {{.Action}}<br>
+                        <td>                            
+                            <table width=100%>
+                                
+                                <tr>
+                                    <td>{{.Name}}</td>
+                                    <td>{{.AtkType}}</td>
+                                    <td>Level:{{.Level}}</td>
+                                    <td>P:{{.Power}}</td>
+                                    <td>M:{{.Magic}}</td>
+                                    <td>W:{{.Weight}}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td colspan=6>{{.Content}}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>{{.Action}}</td>
+                                    <td>{{.ActionCost}}</td>
+                                    <td>{{.Type}}</td>
+                                    <td>{{.Tag}}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </td>
+                                
+                                <tr>
+                                    <td colspan=6>{{.ActionContent}}</td>
+                                </td>
+                                
+                            </table>
                         </td>
                     </tr>
                 {{end}}

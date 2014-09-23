@@ -24,7 +24,6 @@ func init() {
         
         FrontControl(w, r,
             ActionMap{
-                "TestView": TestView,
                 "QueryCardPage": QueryCardPage,
                 "AddCardSuit": AddCardSuit,
                 "QueryCardSuitPage": QueryCardSuitPage,
