@@ -15,13 +15,33 @@ CardListView.prototype = {
 	__proto__:EventDispatcher.prototype,
 	addCard:function( index, model ){
 		var itemroot = $('<div class="floatLeft item"></div>' );
-		var controlroot = $('<div class="itemControlContainer"></div>' );
-		var checkbox = $('<input type="checkbox" id="chk_want_' + index + '" class="chk_want"/><label for="check">need</label>' );
-		var cardroot = this.getCardTemplate( model );
-		controlroot.append( checkbox);
-		itemroot.append( cardroot );
-		itemroot.append( controlroot );
+		//var controlroot = $('<div class="itemControlContainer"></div>' );
+		//var checkbox = $('<input type="checkbox" id="chk_want_' + index + '" class="chk_want"/><label for="check">need</label>' );
+		var clickborder = $('<div class="clickborder"></div>');
+		clickborder.attr('id', 'btn_border_' + index );
 		
+		var cardroot = this.getCardTemplate( model );
+		//controlroot.append( checkbox);
+		itemroot.append( cardroot );
+		itemroot.append( clickborder );
+		//itemroot.append( controlroot );
+		var self = this;
+		clickborder.css( 'cursor', 'pointer' );
+		clickborder.click( function(){
+			var target = $(this);
+			var id = target.attr( 'id' );
+			var cid = id.substring( 'btn_border_'.length, id.length );
+			var val;
+			if( target.hasClass( 'redOutline' )){
+				$( this ).removeClass( 'redOutline' );
+				val = false;
+			}else{
+				$( this ).addClass( 'redOutline' );
+				val = true;
+			}
+			self.dispatchEvent( new Event( 'onCardListViewChkNeedChange', {cid:cid, val:val } ));
+		});
+		/*
 		var self = this;
 		checkbox.change( function(){
 			var target = $(this);
@@ -30,6 +50,7 @@ CardListView.prototype = {
 			var val = target[0].checked;
 			self.dispatchEvent( new Event( 'onCardListViewChkNeedChange', {cid:cid, val:val } ));
 		});
+		*/
 		this._root.append( itemroot );
 	},
 	setTargetNeed:function( id, val ){
