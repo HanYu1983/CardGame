@@ -74,12 +74,12 @@ func QueryCard(w http.ResponseWriter, r *http.Request) interface{} {
 
 func CreateCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
     VerifyParam(r, "name", ParamNotNil())
-    VerifyParam(r, "id", ParamNotNil())
+    VerifyParam(r, "id[]", ParamNotNil())
     VerifyParam(r, "description", ParamNotNil())
     
     name := r.Form["name"][0]
     description := r.Form["description"][0]
-    idstr := r.Form["id"]
+    idstr := r.Form["id[]"]
     
     var ids []int64
     for _, v := range idstr {
