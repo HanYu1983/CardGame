@@ -1,5 +1,7 @@
 <html>
 	<head>
+		<meta charset='UTF-8'/>
+        <link type='text/css', rel='stylesheet', href='css/pattern1.css'/>
 		<link href="lib/jquery-ui-1.11.1/jquery-ui.css" rel="stylesheet">
 		<link href="lib/perfect-scrollbar-0.5.1/src/perfect-scrollbar.css" rel="stylesheet">
 	</head>
@@ -77,6 +79,7 @@
 	<script src="lib/jquery-ui-1.11.1/jquery-ui.js"></script>
 	<script src="lib/perfect-scrollbar-0.5.1/src/perfect-scrollbar.js"></script>
 	<script src="lib/vic.events.js"></script>
+	<script src="lib/vic.utils.js"></script>
 	<script src="js/model/CardProxyModel.js"></script>
 	<script src="js/model/DeckListModel.js"></script>
 	<script src="js/model/CardListModel.js"></script>
@@ -85,69 +88,88 @@
 	<script src="js/controller/CardListController.js"></script>
 	<script src="js/controller/DeckListController.js"></script>
 	<script>
+	var queryPath = '../test?cmd=QueryCard';
+	var ary_card;
+	var template;
 	
-	//import class
-	var CardProxyModel = window.app.model.CardProxyModel;
-	var DeckModel = window.app.model.DeckListModel;
-	var DeckListController = window.app.controller.DeckListController;
-	var CardListController = window.app.controller.CardListController;
-	
-	//from backend original model
-	var ary = [{name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}];
-	
-	//using for front end
-	var ary_cardModelProxy = [];
-	
-	var itemContainer = $('#itemContainer' );
-	var deckItemContainer = $('#deckItemContainer' );
-	
-	$('#cardContainer').perfectScrollbar();
-	
-	var deckListController = new DeckListController( {
-		deckListModel:ary_cardModelProxy,
-		root:deckItemContainer
-	} );
-	
-	var deckListController = new DeckListController({
-		root:deckItemContainer
-	});	
-	
-	deckListController.addEventListener( 'onDeckListViewSprCountChange', function( e ){
-		var index = e.getData().index;
-		var val = e.getData().val;
-		var model = ary_cardModelProxy[index];
-		model.setCount( val );
+	vic.utils.importList( ['import/pattern2.html'], 
+	function( id, data ){
+		template = $( data );
+	}, function(){
+		vic.utils.toURL( queryPath, {}, 'GET', function( data ){
+			if( data.Success ){
+				ary_card = data.Info;
+                appStart()
+			}else alert( data.Info );
+		});
 	});
 	
-	deckListController.addEventListener( 'onDeckListViewBtnDeleteClick', function( e ){
-		var index = e.getData().index;
-		var model = ary_cardModelProxy[index];
-		deckListController.subCard( model );
-	});
-	
-	deckListController.addEventListener( 'onDeckListModelSubCard', function( e ){
-		var model = e.getData();
-		cardListController.setTargetNeed( model.getId(), false );
-	});
-	
-	var cardListController = new CardListController( {	ary_model:ary, 
-														ary_cardModelProxy:ary_cardModelProxy, 
-														root:itemContainer } );
-														
-	cardListController.addEventListener( 'onCardListViewChkNeedChange', function( e ){
-		var retcid = e.getData().cid;
-		var retval = e.getData().val;
-		var model = ary_cardModelProxy[retcid];
-		if( retval ){
-			deckListController.addCard( model );
-		}else{
+	function appStart(){
+		//import class
+		var CardProxyModel = window.app.model.CardProxyModel;
+		var DeckModel = window.app.model.DeckListModel;
+		var DeckListController = window.app.controller.DeckListController;
+		var CardListController = window.app.controller.CardListController;
+		
+		//from backend original model
+		//var ary = [{name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}];
+		
+		//using for front end
+		var ary_cardModelProxy = [];
+		
+		var itemContainer = $('#itemContainer' );
+		var deckItemContainer = $('#deckItemContainer' );
+		
+		$('#cardContainer').perfectScrollbar();
+		
+		var deckListController = new DeckListController( {
+			deckListModel:ary_cardModelProxy,
+			root:deckItemContainer
+		} );
+		
+		var deckListController = new DeckListController({
+			root:deckItemContainer
+		});	
+		
+		deckListController.addEventListener( 'onDeckListViewSprCountChange', function( e ){
+			var index = e.getData().index;
+			var val = e.getData().val;
+			var model = ary_cardModelProxy[index];
+			model.setCount( val );
+		});
+		
+		deckListController.addEventListener( 'onDeckListViewBtnDeleteClick', function( e ){
+			var index = e.getData().index;
+			var model = ary_cardModelProxy[index];
 			deckListController.subCard( model );
-		}
-	});
+		});
+		
+		deckListController.addEventListener( 'onDeckListModelSubCard', function( e ){
+			var model = e.getData();
+			cardListController.setTargetNeed( model.getId(), false );
+		});
+		
+		var cardListController = new CardListController( {	ary_model:ary_card, 
+															ary_cardModelProxy:ary_cardModelProxy, 
+															root:itemContainer,
+															cardTemplete:template} );
+															
+		cardListController.addEventListener( 'onCardListViewChkNeedChange', function( e ){
+			var retcid = e.getData().cid;
+			var retval = e.getData().val;
+			var model = ary_cardModelProxy[retcid];
+			if( retval ){
+				deckListController.addCard( model );
+			}else{
+				deckListController.subCard( model );
+			}
+		});
+		
+		$('#submit' ).click( function(){
+			var cards = deckListController.getCards();
+			console.log( cards );
+		});
+	}
 	
-	$('#submit' ).click( function(){
-		var cards = deckListController.getCards();
-		console.log( cards );
-	});
 	</script>
 </html>

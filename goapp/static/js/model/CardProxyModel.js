@@ -25,5 +25,8 @@ CardProxyModel.prototype = {
 	},
 	getName:function(){
 		return this._model.name;
+	},
+	getModel:function(){
+		return this._model;
 	}
 }
