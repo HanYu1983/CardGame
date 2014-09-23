@@ -25,6 +25,7 @@ func init() {
                 "AddCardSuit": AddCardSuit,
                 "QueryCardSuitPage": QueryCardSuitPage,
                 "EditCardSuitPage": EditCardSuitPage,
+                "ModifyCardWithCardSuit": ModifyCardWithCardSuit,
             },
         )
     }
