@@ -19,6 +19,7 @@ DeckListModel.prototype = {
 	},
 	subCard:function( cardModel ){
 		if( !this.hasCard( cardModel ) )	return;
+		cardModel.setCount( 3 );
 		this._ary_cards.splice( this._ary_cards.indexOf( cardModel ), 1 );
 		this.dispatchEvent( new Event( 'onDeckListModelSubCard', cardModel ));
 	},
