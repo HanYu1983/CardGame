@@ -6,22 +6,21 @@
 		<link href="lib/perfect-scrollbar-0.5.1/src/perfect-scrollbar.css" rel="stylesheet">
 	</head>
 	<style>
-	.outline{
-		outline:#000 solid 2px;
+	.root{
+		width:100%;
 	}
 	.cardContainer{
 		position:relative;
-		width:700px;
+		width:70%;
 		height:600px;
 		overflow:hidden;
 		padding:5px;
-		//float:left;
 	}
 	.cardContent{
-		width:800px;
+		width:100%;
 	}
 	.deckContainer{
-		//float:left;
+		position:relative;
 		width:300px;
 		height:600px;
 		padding:5px;
@@ -29,9 +28,7 @@
 	.deckContent{
 		width:300px;
 	}
-	.deckItem{
-		width:300px;
-	}
+	
 	.card{
 		width:150px;
 		height:200px;
@@ -42,14 +39,35 @@
 		height:20px;
 	}
 	.item{
-		//float:left;
 		margin-top:5px
 	}
 	.itemControlContainer{
 		margin-top:5px
 	}
+	.deckItem{
+		margin-top:5px;
+		width:300px;
+	}
+	.deckItem .name{
+		width:185px;
+	}
 	.floatLeft{
 		float:left;
+	}
+	.inp_name{
+		width:220px;
+	}
+	.taa_describe{
+		width:220px;
+		height:100px;
+	}
+	.btn_submit{
+		width:100px;
+		left:188px;
+		position:relative;
+	}
+	.savePanel{
+		padding:5px;
 	}
     </style>
 	<body>
@@ -59,13 +77,26 @@
 					<div id="itemContainer" class="itemContainer"></div>
 				</div>
 			</div>
-			<div class="outline floatLeft deckContainer">
+			<div id="deckContainer" class="outline floatLeft deckContainer">
+				<div class='outline savePanel'>
+					<div>
+						套牌名稱
+						<input class='inp_name'/>
+					</div>
+					<div>
+						套牌說明
+						<textarea class='taa_describe'></textarea>
+					</div>
+					<button id="btn_submit" class='btn_submit'>儲存 </button>
+				</div>
 				<div class="deckContent">
 					<div id="deckItemContainer" class="deckItemContainer">
 					</div>
 				</div>
+				
 			</div>
-			<button id="submit">submit</button>
+			
+			
 		</div>
 		<!--
 		<div id="deckItemClone" class="deckItem" style="display:none">
@@ -96,9 +127,6 @@
 	function( id, data ){
 		template = $( data );
 	}, function(){
-		//ary_card = [{Name:'vic', id:1}, {Name:'han', id:2}, {Name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}];
-		//appStart();
-		
 		vic.utils.toURL( queryPath, {}, 'GET', function( data ){
 			if( data.Success ){
 				ary_card = data.Info;
@@ -112,9 +140,6 @@
 		var DeckListController = window.app.controller.DeckListController;
 		var CardListController = window.app.controller.CardListController;
 		
-		//from backend original model
-		//var ary = [{name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}];
-		
 		//using for front end
 		var ary_cardModelProxy = [];
 		
@@ -122,6 +147,7 @@
 		var deckItemContainer = $('#deckItemContainer' );
 		
 		$('#cardContainer').perfectScrollbar();
+		$('#deckContainer').perfectScrollbar();
 		
 		var deckListController = new DeckListController( {
 			deckListModel:ary_cardModelProxy,
@@ -166,7 +192,7 @@
 			}
 		});
 		
-		$('#submit' ).click( function(){
+		$('#btn_submit' ).click( function(){
 			var cards = deckListController.getCards();
 			console.log( cards );
 		});
