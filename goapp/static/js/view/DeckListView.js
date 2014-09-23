@@ -17,7 +17,7 @@ DeckListView.prototype = {
 		itemroot.attr( 'id', 'deckItem_' + cmp.getId() );
 		
 		var div_name = $('<div id="name" class="floatLeft"></div>' );
-		div_name.html( cmp.getModel().Name );
+		div_name.html( cmp.getModel().Name + ':' + cmp.getModel().ActionName );
 		
 		var spr_count = $( '<input class="spr_count" value="1" />' );
 		spr_count.attr( 'id', 'spr_count_' + cmp.getId() );
