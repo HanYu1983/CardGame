@@ -75,8 +75,10 @@ func QueryCard(w http.ResponseWriter, r *http.Request) interface{} {
 func CreateCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
     VerifyParam(r, "name", ParamNotNil())
     VerifyParam(r, "id", ParamNotNil())
+    VerifyParam(r, "description", ParamNotNil())
     
     name := r.Form["name"][0]
+    description := r.Form["description"][0]
     idstr := r.Form["id"]
     
     var ids []int64
@@ -89,6 +91,6 @@ func CreateCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
     }
     
     var cr ICardSuitRepository = GetApp().GetCardSuitRepository(r)    
-    key := cr.Create(CardSuitPO{Name:name, CardIds: ids})
+    key := cr.Create(CardSuitPO{Name:name, Description:description, CardIds:ids})
     return Success(key)
 }

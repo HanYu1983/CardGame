@@ -2,35 +2,9 @@ package hello
 
 import (
     "net/http"
-    "html/template"
     "strconv"
+    "sort"
 )
-
-type Friend struct {
-    Fname string
-}
-
-type Person struct {
-    UserName string
-    Emails   []string
-    Friends  []*Friend
-}
-
-
-func TestView(w http.ResponseWriter, r *http.Request) interface{} {
-    f1 := Friend{Fname: "minux.ma"}
-    f2 := Friend{Fname: "xushiwei"}
-    t := template.New("fieldname example")
-    t, _ = t.Parse(stringWithFile("tmpl/Test.html"))
-    p := Person{UserName: "Astaxie",
-        Emails:  []string{"astaxie@beego.me", "astaxie@gmail.com"},
-        Friends: []*Friend{&f1, &f2}}
-    
-    w.Header().Set("Content-Type", "text/html")
-    t.Execute(w, p)
-    return CustomView
-}
-
 
 type QueryCardPageModel struct {
     Cards []interface{}
@@ -85,6 +59,8 @@ func EditCardSuitPage(w http.ResponseWriter, r *http.Request) interface{} {
     cardSuit := csr.Read(key).(CardSuitPO)
     model := EditCardSuitPageModel{CardSuit: cardSuit}
     model.AllCards = cr.GetAll()
+    
+    sort.Sort(int64Array(cardSuit.CardIds))
     
     for _, cardId := range cardSuit.CardIds {
         model.Cards = append( model.Cards, cr.Read(cardId).(CardPO) )

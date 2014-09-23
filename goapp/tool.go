@@ -39,3 +39,8 @@ func readLines(path string) ([]string, error) {
   }
   return lines, scanner.Err()
 }
+
+type int64Array []int64
+func (s int64Array) Len() int { return len(s) }
+func (s int64Array) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
+func (s int64Array) Less(i, j int) bool { return s[i] < s[j] }
