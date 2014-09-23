@@ -15,7 +15,6 @@ CardListView.prototype = {
 	__proto__:EventDispatcher.prototype,
 	addCard:function( index, model ){
 		var itemroot = $('<div class="floatLeft item"></div>' );
-		//var cardroot = $('<div class="card"></div>' );
 		var controlroot = $('<div class="itemControlContainer"></div>' );
 		var checkbox = $('<input type="checkbox" id="chk_want_' + index + '" class="chk_want"/><label for="check">need</label>' );
 		var cardroot = this.getCardTemplate( model );
