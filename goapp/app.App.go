@@ -33,7 +33,7 @@ func (app *App) GetCardRepository(request *http.Request) ICardRepository {
                     },
                     GetAllFn: func(ctx appengine.Context, q *datastore.Query) (ret []interface{}, keys []*datastore.Key, err error ) {
                         var cards []CardPO
-                        keys, err = q.GetAll(ctx, &cards)
+                        keys, err = q.Order("Type").GetAll(ctx, &cards)
                         for idx, card := range cards {
                             card.Key = keys[idx].IntID()
                             ret = append(ret, card)
