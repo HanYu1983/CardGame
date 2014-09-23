@@ -1,0 +1,153 @@
+<html>
+	<head>
+		<link href="lib/jquery-ui-1.11.1/jquery-ui.css" rel="stylesheet">
+		<link href="lib/perfect-scrollbar-0.5.1/src/perfect-scrollbar.css" rel="stylesheet">
+	</head>
+	<style>
+	.outline{
+		outline:#000 solid 2px;
+	}
+	.cardContainer{
+		position:relative;
+		width:800px;
+		height:400px;
+		overflow:hidden;
+		padding:5px;
+		//float:left;
+	}
+	.cardContent{
+		width:800px;
+	}
+	.deckContainer{
+		//float:left;
+		width:300px;
+		height:400px;
+		padding:5px;
+	}
+	.deckContent{
+		width:300px;
+	}
+	.deckItem{
+		width:300px;
+	}
+	.card{
+		width:150px;
+		height:200px;
+		outline:#000 solid 1px;
+	}
+	.spr_count{
+		width:30px;
+		height:20px;
+	}
+	.item{
+		//float:left;
+		margin-top:5px
+	}
+	.itemControlContainer{
+		margin-top:5px
+	}
+	.floatLeft{
+		float:left;
+	}
+    </style>
+	<body>
+		<div class="root">
+			<div id="cardContainer" class="outline floatLeft cardContainer">
+				<div class="cardContent">
+					<div id="itemContainer" class="itemContainer"></div>
+				</div>
+			</div>
+			<div class="outline floatLeft deckContainer">
+				<div class="deckContent">
+					<div id="deckItemContainer" class="deckItemContainer">
+					</div>
+				</div>
+			</div>
+			<button id="submit">submit</button>
+		</div>
+		<!--
+		<div id="deckItemClone" class="deckItem" style="display:none">
+			<div id="name" class="floatLeft">cardA</div>
+			<input id="spr_count" class="spr_count" value="1" />
+			<button id="delete">delete</button>
+		</div>
+		-->
+	</body>
+	<script src="lib/jquery-ui-1.11.1/external/jquery/jquery.js"></script>
+	<script src="lib/jquery-ui-1.11.1/jquery-ui.js"></script>
+	<script src="lib/perfect-scrollbar-0.5.1/src/perfect-scrollbar.js"></script>
+	<script src="lib/vic.events.js"></script>
+	<script src="js/model/CardProxyModel.js"></script>
+	<script src="js/model/DeckListModel.js"></script>
+	<script src="js/model/CardListModel.js"></script>
+	<script src="js/view/DeckListView.js"></script>
+	<script src="js/view/CardListView.js"></script>
+	<script src="js/controller/CardListController.js"></script>
+	<script src="js/controller/DeckListController.js"></script>
+	<script>
+	
+	//import class
+	var CardProxyModel = window.app.model.CardProxyModel;
+	var DeckModel = window.app.model.DeckListModel;
+	var DeckListController = window.app.controller.DeckListController;
+	var CardListController = window.app.controller.CardListController;
+	
+	//from backend original model
+	var ary = [{name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}];
+	
+	//using for front end
+	var ary_cardModelProxy = [];
+	
+	var itemContainer = $('#itemContainer' );
+	var deckItemContainer = $('#deckItemContainer' );
+	
+	$('#cardContainer').perfectScrollbar();
+	
+	var deckListController = new DeckListController( {
+		deckListModel:ary_cardModelProxy,
+		root:deckItemContainer
+	} );
+	
+	var deckListController = new DeckListController({
+		root:deckItemContainer
+	});	
+	
+	deckListController.addEventListener( 'onDeckListViewSprCountChange', function( e ){
+		var index = e.getData().index;
+		var val = e.getData().val;
+		var model = ary_cardModelProxy[index];
+		model.setCount( val );
+	});
+	
+	deckListController.addEventListener( 'onDeckListViewBtnDeleteClick', function( e ){
+		var index = e.getData().index;
+		var model = ary_cardModelProxy[index];
+		deckListController.subCard( model );
+	});
+	
+	deckListController.addEventListener( 'onDeckListModelSubCard', function( e ){
+		var model = e.getData();
+		cardListController.setTargetNeed( model.getId(), false );
+	});
+	
+	var cardListController = new CardListController( {	ary_model:ary, 
+														ary_cardModelProxy:ary_cardModelProxy, 
+														root:itemContainer } );
+														
+	cardListController.addEventListener( 'onCardListViewChkNeedChange', function( e ){
+		var retcid = e.getData().cid;
+		var retval = e.getData().val;
+		var model = ary_cardModelProxy[retcid];
+		if( retval ){
+			deckListController.addCard( model );
+		}else{
+			deckListController.subCard( model );
+		}
+	});
+	
+	$('#submit' ).click( function(){
+		var cards = deckListController.getCards();
+		console.log( cards );
+	});
+	</script>
+</html>
