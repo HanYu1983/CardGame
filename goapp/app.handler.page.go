@@ -65,7 +65,7 @@ func AddCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
     var cr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
     key := cr.Create(CardSuitPO{Name:name})
     
-    http.Redirect(w, r, r.URL.Path+"?cmd=EditCardSuitPage&key="+strconv.FormatInt(key, 10), 301)
+    http.Redirect(w, r, r.URL.Path+"?cmd=EditCardSuitPage&key="+strconv.FormatInt(key, 10), 302)
     return CustomView
 }
 
@@ -136,7 +136,7 @@ func ModifyCardWithCardSuit(w http.ResponseWriter, r *http.Request) interface{} 
         }
         break
     }
-    http.Redirect(w, r, r.URL.Path+"?cmd=EditCardSuitPage&key="+strconv.FormatInt(key, 10), 301)
+    http.Redirect(w, r, r.URL.Path+"?cmd=EditCardSuitPage&key="+strconv.FormatInt(key, 10), 302)
     return CustomView
 }
 

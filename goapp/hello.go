@@ -18,6 +18,10 @@ func init() {
     }
     
     PageFrontControl := func(w http.ResponseWriter, r *http.Request){
+        w.Header().Set("Pragma", "No-cache")
+        w.Header().Set("Cache-Control", "no-cache,no-store,max-age=0")
+        w.Header().Set("Expires", "1")
+        
         FrontControl(w, r,
             ActionMap{
                 "TestView": TestView,
