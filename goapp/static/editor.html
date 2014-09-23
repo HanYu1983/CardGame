@@ -81,11 +81,11 @@
 				<div class='outline savePanel'>
 					<div>
 						套牌名稱
-						<input class='inp_name'/>
+						<input id='inp_name' class='inp_name'/>
 					</div>
 					<div>
 						套牌說明
-						<textarea class='taa_describe'></textarea>
+						<textarea id='taa_describe' class='taa_describe'></textarea>
 					</div>
 					<button id="btn_submit" class='btn_submit'>儲存 </button>
 				</div>
@@ -120,6 +120,7 @@
 	<script src="js/controller/DeckListController.js"></script>
 	<script>
 	var queryPath = '../Func?cmd=QueryCard';
+	var savePath = '../Func?cmd=CreateCardSuit';
 	var ary_card;
 	var template;
 	
@@ -194,7 +195,31 @@
 		
 		$('#btn_submit' ).click( function(){
 			var cards = deckListController.getCards();
-			console.log( cards );
+			
+			var cardIds = [];
+			for( var i in cards ){
+				var cardProxyModel = cards[i];
+				var key = cardProxyModel.getModel().Key;
+				if( cardProxyModel.count() > 1 ){
+					for( var j = 0; j < cardProxyModel.count(); ++j ){
+						cardIds.push( key );
+					}
+				}else cardIds.push( key );
+			}
+			console.log( 'cardIds', cardIds );
+			console.log( 'cardIds', cardIds.length );
+			var savedata = {
+				name:$('#inp_name' ).val(),
+				id:cardIds,
+				description:$('#taa_describe').val()
+			}
+			
+			vic.utils.toURL( savePath, savedata, 'GET', function( data ){
+				console.log( data );
+				if( data.Success ){
+					console.log( data );
+				}else alert( data.Info );
+			});
 		});
 	}
 	
