@@ -98,11 +98,19 @@ func ModifyCardWithCardSuit(w http.ResponseWriter, r *http.Request) interface{} 
     VerifyParam(r, "cardId", ParamNotNil())
     VerifyParam(r, "type", ParamNotNil())
     ty := r.Form["type"][0]
+    key, _ := strconv.ParseInt(r.Form["key"][0], 10, 64)
+    
+    var csr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
+    cardSuit := csr.Read(key).(CardSuitPO)
+    
     switch ty {
     case "add":
+        
         break
     case "delete":
+        
         break
     }
-    return CustomView
+    return Success(cardSuit)
 }
+
