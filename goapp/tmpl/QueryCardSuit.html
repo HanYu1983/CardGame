@@ -14,6 +14,7 @@
             <thead>
                 <tr>
                     <th>操作</th>
+                    <th width="10%">Key</th>
                     <th width="10%">名稱</th>
                     <th width="30%">描述</th>
                     <th width="60%">內容</th>
@@ -23,6 +24,7 @@
                 {{range .CardSuits}}
                 <tr>
                     <td><a href="Page?cmd=EditCardSuitPage&key={{.Key}}"><button>編輯</button></a></td>
+                    <td align="center" valign="middle">{{.Key}}</td>
                     <td align="center" valign="middle">{{.Name}}</td>
                     <td align="left" valign="middle">{{.Description}}</td>
                     <td>

@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<meta charset='UTF-8'/>
+		<link type='text/css', rel='stylesheet', href='css/pattern1.css'/>
+	</head>
+	<style>
+	.root{
+		width:660px;
+	}
+	</style>
+	<body>
+		<div id='root' class='root'></div>
+	</body>
+	<script src='lib/jquery-1.7.2.js'></script>
+	<script src="lib/vic.utils.js"></script>
+	<script>
+	var hash = window.location.search;
+    hash = hash.replace('?', '&')
+	var queryPath = '../Func?cmd=PrintCardSuit' + hash;
+	var ary_card;
+	var template;
+	
+	vic.utils.importList( ['import/pattern2.html'], 
+	function( id, data ){
+		template = $( data );
+	}, function(){
+		vic.utils.toURL( queryPath, {}, 'GET', function( data ){
+			if( data.Success ){
+				ary_card = data.Info;
+                appStart()
+			}else alert( data.Info );
+		});
+	});
+	
+	function appStart(){
+		var card;
+		var temp;
+		var pid = 0;
+		var sid = pid * 9;
+		var eid = sid + 9;
+		for( var i = sid; i < ( eid > ary_card.length ? ary_card.length : eid ); ++i ){
+			card = ary_card[i];
+			temp = template.clone();
+			temp.find( '.name' ).html( card.Name );
+			temp.find( '.content' ).html( card.Content );
+			temp.find( '.action' ).html( card.Action );
+			temp.find( '.power' ).html( card.Power );
+			temp.find( '.magic' ).html( card.Magic );
+			temp.find( '.type' ).html( card.AtkType );
+			temp.find( '.card_type' ).html( card.Type );
+			temp.find( '.action_cost' ).html( card.ActionCost );
+			temp.find( '.action_type' ).html( card.ActionType );
+			temp.find( '.action_content' ).html( card.ActionContent );
+			temp.find( '.weight' ).html( '重' + card.Weight );
+			temp.find( '.id' ).html( card.Key );
+			temp.find( '.level' ).html( '星' + card.Level );
+			temp.find( '.tag' ).html( card.Tag );
+			$('#root' ).append( temp );
+		}
+	}
+	</script>
+</html>
