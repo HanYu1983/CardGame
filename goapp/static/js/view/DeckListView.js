@@ -19,7 +19,7 @@ DeckListView.prototype = {
 		var div_name = $('<div id="name" class="name floatLeft"></div>' );
 		div_name.html( cmp.getModel().Name + ':' + cmp.getModel().Action );
 		
-		var spr_count = $( '<input class="spr_count" value="1" />' );
+		var spr_count = $( '<input class="spr_count" value="3" />' );
 		spr_count.attr( 'id', 'spr_count_' + cmp.getId() );
 		
 		var btn_delete = $( '<button id="delete">delete</button>' );
