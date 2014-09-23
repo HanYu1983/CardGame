@@ -17,14 +17,15 @@ function CardListController( options ){
 	} );
 	this.view = new CardListView( {
 		root:options.root,
-		cardTemplete:cardTemplete
+		cardTemplete:options.cardTemplete
 	} );
 	
 	model.addEventListener( 'onCardListModelAddCard', function( e ){
 		var retIndex = e.getData().index;
 		var retModel = e.getData().model;
 		retModel.cid = retIndex;
-		self.view.addCard( retIndex, retModel.getModel() );
+		
+		self.view.addCard( retIndex, retModel );
 		ary_cardModelProxy.push( new CardProxyModel( {cid:retIndex, model:retModel} ));
 	});
 	var self = this;

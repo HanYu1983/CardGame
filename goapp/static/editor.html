@@ -11,8 +11,8 @@
 	}
 	.cardContainer{
 		position:relative;
-		width:800px;
-		height:400px;
+		width:700px;
+		height:600px;
 		overflow:hidden;
 		padding:5px;
 		//float:left;
@@ -23,7 +23,7 @@
 	.deckContainer{
 		//float:left;
 		width:300px;
-		height:400px;
+		height:600px;
 		padding:5px;
 	}
 	.deckContent{
@@ -96,13 +96,21 @@
 	function( id, data ){
 		template = $( data );
 	}, function(){
+		//ary_card = [{Name:'vic', id:1}, {Name:'han', id:2}, {Name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}];
+		//appStart();
+   
 		vic.utils.toURL( queryPath, {}, 'GET', function( data ){
 			if( data.Success ){
 				ary_card = data.Info;
                 appStart()
 			}else alert( data.Info );
 		});
+		
 	});
+	
+	
+	//ary_card = [{name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}, {name:'vic', id:1}, {name:'han', id:2}, {name:'vic3', id:3}];
+   // appStart();
 	
 	function appStart(){
 		//import class
