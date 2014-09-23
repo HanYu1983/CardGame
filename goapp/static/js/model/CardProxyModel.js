@@ -5,7 +5,7 @@ window.app.model.CardProxyModel = CardProxyModel;
 function CardProxyModel( options ){
 	this._cid = options.cid;
 	this._model = options.model;
-	this._count = 0;
+	this._count = 3;
 }
 CardProxyModel.prototype = {
 	add:function(){

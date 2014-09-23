@@ -69,6 +69,9 @@
 	.savePanel{
 		padding:5px;
 	}
+	.saveInfo{
+		padding:5px;
+	}
 	.item .clickborder{
 		width:220px;
 		height:310px;
@@ -97,11 +100,13 @@
 					</div>
 					<button id="btn_submit" class='btn_submit'>儲存 </button>
 				</div>
+				<div class='outline saveInfo'>
+					<div id='txt_count'>目前張數： 0</div>
+				</div>
 				<div class="deckContent">
 					<div id="deckItemContainer" class="deckItemContainer">
 					</div>
 				</div>
-				
 			</div>
 			
 			
@@ -172,17 +177,21 @@
 			var val = e.getData().val;
 			var model = ary_cardModelProxy[index];
 			model.setCount( val );
+			console.log( val );
+			calculateCount();
 		});
 		
 		deckListController.addEventListener( 'onDeckListViewBtnDeleteClick', function( e ){
 			var index = e.getData().index;
 			var model = ary_cardModelProxy[index];
 			deckListController.subCard( model );
+			calculateCount();
 		});
 		
 		deckListController.addEventListener( 'onDeckListModelSubCard', function( e ){
 			var model = e.getData();
 			cardListController.setTargetNeed( model.getId(), false );
+			calculateCount();
 		});
 		
 		var cardListController = new CardListController( {	ary_model:ary_card, 
@@ -199,21 +208,16 @@
 			}else{
 				deckListController.subCard( model );
 			}
+			calculateCount();
 		});
 		
 		$('#btn_submit' ).click( function(){
-			var cards = deckListController.getCards();
-			
-			var cardIds = [];
-			for( var i in cards ){
-				var cardProxyModel = cards[i];
-				var key = cardProxyModel.getModel().Key;
-				if( cardProxyModel.count() > 1 ){
-					for( var j = 0; j < cardProxyModel.count(); ++j ){
-						cardIds.push( key );
-					}
-				}else cardIds.push( key );
+			var cardIds = getKeysArray();
+			if( cardIds.length != 36 ){
+				alert( '請組36張' );
+				return;
 			}
+			
 			var savedata = {
 				name:$('#inp_name' ).val(),
 				id:cardIds,
@@ -226,6 +230,25 @@
 				}else alert( data.Info );
 			});
 		});
+		
+		function getKeysArray(){
+			var cards = deckListController.getCards();
+			var cardIds = [];
+			for( var i in cards ){
+				var cardProxyModel = cards[i];
+				var key = cardProxyModel.getModel().Key;
+				if( cardProxyModel.count() > 1 ){
+					for( var j = 0; j < cardProxyModel.count(); ++j ){
+						cardIds.push( key );
+					}
+				}else cardIds.push( key );
+			}
+			return cardIds;
+		}
+		
+		function calculateCount(){
+			$('#txt_count' ).html( '目前張數： ' + getKeysArray().length );
+		}
 	}
 	
 	</script>

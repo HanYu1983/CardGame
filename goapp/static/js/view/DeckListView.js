@@ -32,13 +32,14 @@ DeckListView.prototype = {
 		this._root.append( itemroot );
 		
 		spr_count.spinner( {min:0} );
-		spr_count.on( "spinchange", function( event, ui ) {
+		spr_count.on( "spin", function( event, ui ) {
 			var target = $(this);
 			var cid = target.attr('id');
-			var val = target.val();
+			var val = ui.value;
 			var id = cid.substring( 'spr_count_'.length, cid.length );
 			self.dispatchEvent( new Event( 'onDeckListViewSprCountChange', {index:id, val:val} ));
 		} );
+		
 		var self = this;
 		btn_delete.click( function(){
 			var target = $(this);
