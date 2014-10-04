@@ -21,6 +21,8 @@ func CreateCard(w http.ResponseWriter, r *http.Request) interface{} {
     VerifyParam(r, "power", ParamNotNil())
     VerifyParam(r, "weight", ParamNotNil())
     
+	shouldUpdate := len(r.Form["key"]) > 0
+	
     name := r.Form["name"][0]
     action := r.Form["action"][0]
     actionContent := r.Form["actionContent"][0]
@@ -51,8 +53,14 @@ func CreateCard(w http.ResponseWriter, r *http.Request) interface{} {
         Weight: weight,
     }
     var cr ICardRepository = GetApp().GetCardRepository(r)
-    key := cr.Create(card)
-    return Success(key)
+	if shouldUpdate {
+		key, _ := strconv.ParseInt(r.Form["key"][0], 10, 64)
+		cr.Update( key, card )
+		return Success(key)
+	}else{
+		key := cr.Create(card)
+		return Success(key)
+	}
 }
 
 func QueryCard(w http.ResponseWriter, r *http.Request) interface{} {

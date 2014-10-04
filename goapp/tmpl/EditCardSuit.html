@@ -59,10 +59,10 @@
                                 
                                 <tr>
                                     <td>{{.Action}}</td>
+									<td>{{.ActionType}}</td>
                                     <td>{{.ActionCost}}</td>
                                     <td>{{.Type}}</td>
                                     <td>{{.Tag}}</td>
-                                    <td>-</td>
                                     <td>-</td>
                                 </td>
                                 
@@ -86,33 +86,64 @@
                         </td>
                         <td>                            
                             <table width=100%>
-                                
-                                <tr>
-                                    <td>{{.Name}}</td>
-                                    <td>{{.AtkType}}</td>
-                                    <td>Level:{{.Level}}</td>
-                                    <td>P:{{.Power}}</td>
-                                    <td>M:{{.Magic}}</td>
-                                    <td>W:{{.Weight}}</td>
-                                </tr>
-                                
-                                <tr>
-                                    <td colspan=6>{{.Content}}</td>
-                                </tr>
-                                
-                                <tr>
-                                    <td>{{.Action}}</td>
-                                    <td>{{.ActionCost}}</td>
-                                    <td>{{.Type}}</td>
-                                    <td>{{.Tag}}</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </td>
-                                
-                                <tr>
-                                    <td colspan=6>{{.ActionContent}}</td>
-                                </td>
-                                
+                                <form action='Func' target=_blank>
+									<input type=hidden name=cmd value=CreateCard>
+									<input type=hidden name=key value={{.Key}}>
+									<tr>
+										<td>
+											<input name=name value={{.Name}}>
+										</td>
+										<td>
+											<input name=atkType value={{.AtkType}}>
+										</td>
+										<td>
+											Level:<input name=level value={{.Level}}>
+										</td>
+										<td>
+											P:<input name=power value={{.Power}}>
+										</td>
+										<td>
+											M:<input name=magic value={{.Magic}}>
+										</td>
+										<td>
+											W:<input name=weight value={{.Weight}}>
+										</td>
+										<td rowspan=4>
+											<input type=submit value=修改>
+										</td>
+									</tr>
+									
+									<tr>
+										<td colspan=6>
+											<textarea name=content  rows=3 cols=100>{{.Content}}</textarea>
+										</td>
+									</tr>
+									
+									<tr>
+										<td>
+											<input name=action value={{.Action}}>
+										</td>
+										<td>
+											<input name=actionType value={{.ActionType}}>
+										</td>
+										<td>
+											<input name=actionCost value={{.ActionCost}}>
+										</td>
+										<td>
+											<input name=type value={{.Type}}>
+										</td>
+										<td>
+											<input name=tag value={{.Tag}}>
+										</td>
+										<td>-</td>
+									</td>
+									
+									<tr>
+										<td colspan=6>
+											<textarea name=actionContent  rows=3 cols=100>{{.ActionContent}}</textarea>
+										</td>
+									</td>
+								</form>
                             </table>
                         </td>
                     </tr>
