@@ -26,7 +26,7 @@
                     <tr>
                         <td align="center" valign="middle">描述</td>
                         <td>
-                            <input name=description value={{.Description}}>
+                            <textarea name=description  rows=3 cols=100>{{.Description}}</textarea>
                         </td>
                     </tr>
                     <tr><td colspan=2>
@@ -40,6 +40,8 @@
                     <tr>
                         <td align="center" valign="middle">
                             <a href='Page?cmd=ModifyCardWithCardSuit&key={{$suitKey}}&cardId={{.Key}}&type=delete'>X</a>
+                            <br>
+                            <a href='Page?cmd=ModifyCardWithCardSuit&key={{$suitKey}}&cardId={{.Key}}&type=add'>O</a>
                         </td>
                         <td>
                             <table width=100%>

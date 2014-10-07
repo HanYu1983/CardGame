@@ -23,7 +23,10 @@
             <tbody>
                 {{range .CardSuits}}
                 <tr>
-                    <td><a href="Page?cmd=EditCardSuitPage&key={{.Key}}"><button>編輯</button></a></td>
+                    <td>
+                        <a href="Page?cmd=EditCardSuitPage&key={{.Key}}"><button>編輯</button></a>
+                        <a href="static/output2.html?cardSuitId={{.Key}}&page=0"><button>列印</button></a>
+                    </td>
                     <td align="center" valign="middle">{{.Key}}</td>
                     <td align="center" valign="middle">{{.Name}}</td>
                     <td align="left" valign="middle">{{.Description}}</td>
