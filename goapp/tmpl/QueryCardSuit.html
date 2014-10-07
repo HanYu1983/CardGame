@@ -28,11 +28,6 @@
                     <td align="center" valign="middle">{{.Name}}</td>
                     <td align="left" valign="middle">{{.Description}}</td>
                     <td>
-                        {{with .CardIds}}
-                            {{range .}}
-                                <a href={{.}}>{{.}}</a>
-                            {{end}}
-                        {{end}}
                     </td>
                 </tr>
                 {{end}}
