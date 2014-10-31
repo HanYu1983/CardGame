@@ -60,7 +60,7 @@ func CreateCard(sys tool.ISystem) interface{} {
 		return tool.Success(key)
 	}else{
 		key := cr.Create(sys, cr.NewKey(sys, nil), card)
-		return tool.Success(key)
+		return tool.Success(key.IntID())
 	}
 }
 
