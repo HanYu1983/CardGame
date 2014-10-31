@@ -1,11 +1,11 @@
-package hello
+package app
 
 import (
     "net/http"
 	"lib/tool"
 )
 
-type CardPO struct {
+type CardEntity struct {
     Key int64
     Name string
     Action string
@@ -22,22 +22,22 @@ type CardPO struct {
     Weight int
 }
 
-type CardSuitPO struct {
+type CardSuitEntity struct {
     Key int64
     Name string
     Description string
     CardIds []int64
 }
 
-type ICardRepository interface {
+type ICardDAO interface {
     tool.IDataAccessObject
 }
 
-type ICardSuitRepository interface {
+type ICardSuitDAO interface {
     tool.IDataAccessObject
 }
 
 type IApp interface {
-    GetCardSuitRepository (r *http.Request) ICardSuitRepository
-    GetCardRepository (r *http.Request) ICardRepository
+    GetCardSuitDAO(r *http.Request) ICardSuitDAO
+    GetCardDAO(r *http.Request) ICardDAO
 }

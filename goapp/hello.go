@@ -4,16 +4,17 @@ import (
     "fmt"
     "net/http"
 	"lib/tool"
+	"app"
 )
 
 func init() {
     FuncFrontControl := func(w http.ResponseWriter, r *http.Request){
         tool.FrontController(w, r,
             tool.ActionMap{
-                "CreateCard": CreateCard,
-                "QueryCard": QueryCard,
-                "CreateCardSuit": CreateCardSuit,
-                "PrintCardSuit": PrintCardSuit,
+                "CreateCard": app.CreateCard,
+                "QueryCard": app.QueryCard,
+                "CreateCardSuit": app.CreateCardSuit,
+                "PrintCardSuit": app.PrintCardSuit,
             },
         )
     }
@@ -25,11 +26,11 @@ func init() {
         
         tool.FrontController(w, r,
             tool.ActionMap{
-                "QueryCardPage": QueryCardPage,
-                "AddCardSuit": AddCardSuit,
-                "QueryCardSuitPage": QueryCardSuitPage,
-                "EditCardSuitPage": EditCardSuitPage,
-                "ModifyCardWithCardSuit": ModifyCardWithCardSuit,
+                "QueryCardPage": app.QueryCardPage,
+                "AddCardSuit": app.AddCardSuit,
+                "QueryCardSuitPage": app.QueryCardSuitPage,
+                "EditCardSuitPage": app.EditCardSuitPage,
+                "ModifyCardWithCardSuit": app.ModifyCardWithCardSuit,
             },
         )
     }

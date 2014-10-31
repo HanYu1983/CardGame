@@ -1,4 +1,4 @@
-package hello
+package app
 
 import (
     "strconv"
@@ -38,7 +38,7 @@ func CreateCard(sys tool.ISystem) interface{} {
     power, _ := strconv.Atoi(r.Form["power"][0])
     weight, _ := strconv.Atoi(r.Form["weight"][0])
     
-    card := CardPO{
+    card := CardEntity{
         Name: name,
         Action: action,
         ActionContent: actionContent, 
@@ -53,7 +53,7 @@ func CreateCard(sys tool.ISystem) interface{} {
         Type: tp, 
         Weight: weight,
     }
-    var cr ICardRepository = GetApp().GetCardRepository(r)
+    var cr ICardDAO = GetApp().GetCardDAO(r)
 	if shouldUpdate {
 		key, _ := strconv.ParseInt(r.Form["key"][0], 10, 64)
 		cr.Update( sys, cr.GetKey(sys, key, nil), card )
@@ -66,17 +66,17 @@ func CreateCard(sys tool.ISystem) interface{} {
 
 func QueryCard(sys tool.ISystem) interface{} {
 	r := sys.GetRequest()
-    var cr ICardRepository = GetApp().GetCardRepository(r)
+    var cr ICardDAO = GetApp().GetCardDAO(r)
     
     keys := r.Form["key"]
     if keys != nil {
-        var cards []CardPO
+        var cards []CardEntity
         for _, k := range keys {
             if len(strings.TrimSpace(k)) == 0 {
                 continue
             }
             ki, _ := strconv.ParseInt(k, 10, 64)
-            card := cr.Read( sys, cr.GetKey(sys, ki, nil) ).(CardPO)
+            card := cr.Read( sys, cr.GetKey(sys, ki, nil) ).(CardEntity)
             cards = append(cards, card)
         }
         return tool.Success(cards)
@@ -105,8 +105,8 @@ func CreateCardSuit(sys tool.ISystem) interface{} {
         ids = append( ids, id )
     }
     
-    var cr ICardSuitRepository = GetApp().GetCardSuitRepository(r)    
-    key := cr.Create(sys, cr.NewKey(sys, nil), CardSuitPO{Name:name, Description:description, CardIds:ids})
+    var cr ICardSuitDAO = GetApp().GetCardSuitDAO(r)    
+    key := cr.Create(sys, cr.NewKey(sys, nil), CardSuitEntity{Name:name, Description:description, CardIds:ids})
     return tool.Success(key)
 }
 
@@ -118,15 +118,15 @@ func PrintCardSuit(sys tool.ISystem) interface{} {
     cardSuitId, _ := strconv.ParseInt(r.Form["cardSuitId"][0], 10, 64)
     page, _ := strconv.Atoi(r.Form["page"][0])
     
-    var cr ICardRepository = GetApp().GetCardRepository(r)
-    var csr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
+    var cr ICardDAO = GetApp().GetCardDAO(r)
+    var csr ICardSuitDAO = GetApp().GetCardSuitDAO(r)
     
-    cardSuit := csr.Read(sys, cr.GetKey(sys, cardSuitId, nil)).(CardSuitPO)
+    cardSuit := csr.Read(sys, cr.GetKey(sys, cardSuitId, nil)).(CardSuitEntity)
     
-    var cards []CardPO
+    var cards []CardEntity
     for idx, cardId := range cardSuit.CardIds {
         if idx >= page*9 && idx < page*9+9 {
-            cards = append( cards, cr.Read(sys, cr.GetKey(sys, cardId, nil)).(CardPO) )
+            cards = append( cards, cr.Read(sys, cr.GetKey(sys, cardId, nil)).(CardEntity) )
         }
     }
     return tool.Success(cards)

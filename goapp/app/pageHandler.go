@@ -1,4 +1,4 @@
-package hello
+package app
 
 import (
     "net/http"
@@ -14,7 +14,7 @@ type QueryCardPageModel struct {
 func QueryCardPage(sys tool.ISystem) interface{} {
 	r := sys.GetRequest()
 	w := sys.GetResponse()
-    var cr ICardRepository = GetApp().GetCardRepository(r)
+    var cr ICardDAO = GetApp().GetCardDAO(r)
     model := QueryCardPageModel{Cards: cr.ReadAll(sys, cr.NewQuery(sys))}
     
     w.Header().Set("Content-Type", "text/html")
@@ -29,7 +29,7 @@ type QueryCardSuitPageModel struct {
 func QueryCardSuitPage(sys tool.ISystem) interface{} {
 	r := sys.GetRequest()
 	w := sys.GetResponse()
-    var cr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
+    var cr ICardSuitDAO = GetApp().GetCardSuitDAO(r)
     model := QueryCardSuitPageModel{CardSuits: cr.ReadAll(sys, cr.NewQuery(sys))}
     
     w.Header().Set("Content-Type", "text/html")
@@ -43,16 +43,16 @@ func AddCardSuit(sys tool.ISystem) interface{} {
     tool.VerifyParam(r, "name", tool.ParamNotNil())
     name := r.Form["name"][0]
     
-    var cr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
-    key := cr.Create(sys, cr.NewKey(sys, nil), CardSuitPO{Name:name})
+    var cr ICardSuitDAO = GetApp().GetCardSuitDAO(r)
+    key := cr.Create(sys, cr.NewKey(sys, nil), CardSuitEntity{Name:name})
     
     http.Redirect(w, r, r.URL.Path+"?cmd=EditCardSuitPage&key="+strconv.FormatInt(key.IntID(), 10), 302)
     return tool.CustomView
 }
 
 type EditCardSuitPageModel struct{
-    CardSuit CardSuitPO
-    Cards []CardPO
+    CardSuit CardSuitEntity
+    Cards []CardEntity
     AllCards []interface{}
 }
 
@@ -62,17 +62,17 @@ func EditCardSuitPage(sys tool.ISystem) interface{} {
     tool.VerifyParam(r, "key", tool.ParamNotNil())
     key, _ := strconv.ParseInt(r.Form["key"][0], 10, 64)
     
-    var cr ICardRepository = GetApp().GetCardRepository(r)
-    var csr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
+    var cr ICardDAO = GetApp().GetCardDAO(r)
+    var csr ICardSuitDAO = GetApp().GetCardSuitDAO(r)
     
-    cardSuit := csr.Read(sys, csr.GetKey(sys, key, nil)).(CardSuitPO)
+    cardSuit := csr.Read(sys, csr.GetKey(sys, key, nil)).(CardSuitEntity)
     model := EditCardSuitPageModel{CardSuit: cardSuit}
     model.AllCards = cr.ReadAll(sys, cr.NewQuery(sys))
     
     sort.Sort(tool.ByTypeInt64(cardSuit.CardIds))
     
     for _, cardId := range cardSuit.CardIds {
-        model.Cards = append( model.Cards, cr.Read(sys, cr.GetKey(sys, cardId, nil)).(CardPO) )
+        model.Cards = append( model.Cards, cr.Read(sys, cr.GetKey(sys, cardId, nil)).(CardEntity) )
     }
     
     w.Header().Set("Content-Type", "text/html")
@@ -89,8 +89,8 @@ func ModifyCardWithCardSuit(sys tool.ISystem) interface{} {
     ty := r.Form["type"][0]
     key, _ := strconv.ParseInt(r.Form["key"][0], 10, 64)
     
-    var csr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
-    cardSuit := csr.Read(sys, csr.GetKey(sys, key, nil)).(CardSuitPO)
+    var csr ICardSuitDAO = GetApp().GetCardSuitDAO(r)
+    cardSuit := csr.Read(sys, csr.GetKey(sys, key, nil)).(CardSuitEntity)
     
     switch ty {
     case "none":
