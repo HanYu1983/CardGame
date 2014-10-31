@@ -3,12 +3,13 @@ package hello
 import (
     "fmt"
     "net/http"
+	"lib/tool"
 )
 
 func init() {
     FuncFrontControl := func(w http.ResponseWriter, r *http.Request){
-        FrontControl(w, r,
-            ActionMap{
+        tool.FrontController(w, r,
+            tool.ActionMap{
                 "CreateCard": CreateCard,
                 "QueryCard": QueryCard,
                 "CreateCardSuit": CreateCardSuit,
@@ -22,8 +23,8 @@ func init() {
         w.Header().Set("Cache-Control", "no-cache,no-store,max-age=0")
         w.Header().Set("Expires", "1")
         
-        FrontControl(w, r,
-            ActionMap{
+        tool.FrontController(w, r,
+            tool.ActionMap{
                 "QueryCardPage": QueryCardPage,
                 "AddCardSuit": AddCardSuit,
                 "QueryCardSuitPage": QueryCardSuitPage,

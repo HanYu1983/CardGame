@@ -2,6 +2,7 @@ package hello
 
 import (
     "net/http"
+	"lib/tool"
 )
 
 type CardPO struct {
@@ -29,11 +30,11 @@ type CardSuitPO struct {
 }
 
 type ICardRepository interface {
-    IRepository
+    tool.IDataAccessObject
 }
 
 type ICardSuitRepository interface {
-    IRepository
+    tool.IDataAccessObject
 }
 
 type IApp interface {

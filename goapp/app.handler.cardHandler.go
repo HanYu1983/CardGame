@@ -1,25 +1,26 @@
 package hello
 
 import (
-    "net/http"
     "strconv"
     "strings"
+	"lib/tool"
 )
 
-func CreateCard(w http.ResponseWriter, r *http.Request) interface{} {
-    VerifyParam(r, "name", ParamNotNil())
-    VerifyParam(r, "action", ParamNotNil())
-    VerifyParam(r, "actionContent", ParamNotNil())
-    VerifyParam(r, "actionCost", ParamNotNil())
-    VerifyParam(r, "actionType", ParamNotNil())
-    VerifyParam(r, "atkType", ParamNotNil())
-    VerifyParam(r, "content", ParamNotNil())
-    VerifyParam(r, "tag", ParamNotNil())
-    VerifyParam(r, "type", ParamNotNil())
-    VerifyParam(r, "level", ParamNotNil())
-    VerifyParam(r, "magic", ParamNotNil())
-    VerifyParam(r, "power", ParamNotNil())
-    VerifyParam(r, "weight", ParamNotNil())
+func CreateCard(sys tool.ISystem) interface{} {
+	r := sys.GetRequest()
+    tool.VerifyParam(r, "name", tool.ParamNotNil())
+    tool.VerifyParam(r, "action", tool.ParamNotNil())
+    tool.VerifyParam(r, "actionContent", tool.ParamNotNil())
+    tool.VerifyParam(r, "actionCost", tool.ParamNotNil())
+    tool.VerifyParam(r, "actionType", tool.ParamNotNil())
+    tool.VerifyParam(r, "atkType", tool.ParamNotNil())
+    tool.VerifyParam(r, "content", tool.ParamNotNil())
+    tool.VerifyParam(r, "tag", tool.ParamNotNil())
+    tool.VerifyParam(r, "type", tool.ParamNotNil())
+    tool.VerifyParam(r, "level", tool.ParamNotNil())
+    tool.VerifyParam(r, "magic", tool.ParamNotNil())
+    tool.VerifyParam(r, "power", tool.ParamNotNil())
+    tool.VerifyParam(r, "weight", tool.ParamNotNil())
     
 	shouldUpdate := len(r.Form["key"]) > 0
 	
@@ -55,15 +56,16 @@ func CreateCard(w http.ResponseWriter, r *http.Request) interface{} {
     var cr ICardRepository = GetApp().GetCardRepository(r)
 	if shouldUpdate {
 		key, _ := strconv.ParseInt(r.Form["key"][0], 10, 64)
-		cr.Update( key, card )
-		return Success(key)
+		cr.Update( sys, cr.GetKey(sys, key, nil), card )
+		return tool.Success(key)
 	}else{
-		key := cr.Create(card)
-		return Success(key)
+		key := cr.Create(sys, cr.NewKey(sys, nil), card)
+		return tool.Success(key)
 	}
 }
 
-func QueryCard(w http.ResponseWriter, r *http.Request) interface{} {
+func QueryCard(sys tool.ISystem) interface{} {
+	r := sys.GetRequest()
     var cr ICardRepository = GetApp().GetCardRepository(r)
     
     keys := r.Form["key"]
@@ -74,20 +76,21 @@ func QueryCard(w http.ResponseWriter, r *http.Request) interface{} {
                 continue
             }
             ki, _ := strconv.ParseInt(k, 10, 64)
-            card := cr.Read( ki ).(CardPO)
+            card := cr.Read( sys, cr.GetKey(sys, ki, nil) ).(CardPO)
             cards = append(cards, card)
         }
-        return Success(cards)
+        return tool.Success(cards)
     }
     
-    var cards []interface{} = cr.GetAll()
-    return Success(cards)
+    var cards []interface{} = cr.ReadAll(sys, cr.NewQuery(sys))
+    return tool.Success(cards)
 }
 
-func CreateCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
-    VerifyParam(r, "name", ParamNotNil())
-    VerifyParam(r, "id[]", ParamNotNil())
-    VerifyParam(r, "description", ParamNotNil())
+func CreateCardSuit(sys tool.ISystem) interface{} {
+	r := sys.GetRequest()
+    tool.VerifyParam(r, "name", tool.ParamNotNil())
+    tool.VerifyParam(r, "id[]", tool.ParamNotNil())
+    tool.VerifyParam(r, "description", tool.ParamNotNil())
     
     name := r.Form["name"][0]
     description := r.Form["description"][0]
@@ -103,13 +106,14 @@ func CreateCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
     }
     
     var cr ICardSuitRepository = GetApp().GetCardSuitRepository(r)    
-    key := cr.Create(CardSuitPO{Name:name, Description:description, CardIds:ids})
-    return Success(key)
+    key := cr.Create(sys, cr.NewKey(sys, nil), CardSuitPO{Name:name, Description:description, CardIds:ids})
+    return tool.Success(key)
 }
 
-func PrintCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
-    VerifyParam(r, "cardSuitId", ParamNotNil())
-    VerifyParam(r, "page", ParamNotNil())
+func PrintCardSuit(sys tool.ISystem) interface{} {
+	r := sys.GetRequest()
+    tool.VerifyParam(r, "cardSuitId", tool.ParamNotNil())
+    tool.VerifyParam(r, "page", tool.ParamNotNil())
     
     cardSuitId, _ := strconv.ParseInt(r.Form["cardSuitId"][0], 10, 64)
     page, _ := strconv.Atoi(r.Form["page"][0])
@@ -117,13 +121,13 @@ func PrintCardSuit(w http.ResponseWriter, r *http.Request) interface{} {
     var cr ICardRepository = GetApp().GetCardRepository(r)
     var csr ICardSuitRepository = GetApp().GetCardSuitRepository(r)
     
-    cardSuit := csr.Read(cardSuitId).(CardSuitPO)
+    cardSuit := csr.Read(sys, cr.GetKey(sys, cardSuitId, nil)).(CardSuitPO)
     
     var cards []CardPO
     for idx, cardId := range cardSuit.CardIds {
         if idx >= page*9 && idx < page*9+9 {
-            cards = append( cards, cr.Read(cardId).(CardPO) )
+            cards = append( cards, cr.Read(sys, cr.GetKey(sys, cardId, nil)).(CardPO) )
         }
     }
-    return Success(cards)
+    return tool.Success(cards)
 }
