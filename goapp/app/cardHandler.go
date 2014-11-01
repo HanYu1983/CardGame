@@ -117,17 +117,17 @@ func PrintCardSuit(sys tool.ISystem) interface{} {
     
     cardSuitId, _ := strconv.ParseInt(r.Form["cardSuitId"][0], 10, 64)
     page, _ := strconv.Atoi(r.Form["page"][0])
-    
+
     var cr ICardDAO = GetApp().GetCardDAO(r)
     var csr ICardSuitDAO = GetApp().GetCardSuitDAO(r)
     
-    cardSuit := csr.Read(sys, cr.GetKey(sys, cardSuitId, nil)).(CardSuitEntity)
-    
+    cardSuit := csr.Read(sys, csr.GetKey(sys, cardSuitId, nil)).(CardSuitEntity)
+
     var cards []CardEntity
     for idx, cardId := range cardSuit.CardIds {
         if idx >= page*9 && idx < page*9+9 {
             cards = append( cards, cr.Read(sys, cr.GetKey(sys, cardId, nil)).(CardEntity) )
         }
     }
-    return tool.Success(cards)
+	return tool.Success(cards)
 }

@@ -27,6 +27,7 @@ func (r *CardDAO) Init(){
 		return
 	}
 	r.GetAllFn = func(ctx appengine.Context, q *datastore.Query) (ret []interface{}, keys []*datastore.Key, err error ) {
+		q = q.Order("Type")
 		var entities []CardEntity
 		keys, err = q.GetAll(ctx, &entities)
 		for idx, entity := range entities {
