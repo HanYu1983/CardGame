@@ -35,7 +35,18 @@
                     {{end}}
                 </form>
                 
-                
+				<tr>
+					<td colspan=2 align=center valign=middle>
+						<form action='Page'>
+							<input type=hidden name='cmd' value='ModifyCardWithCardSuit'>
+							<input type=hidden name='type' value='add'>
+							<input type=hidden name='key' value={{$suitKey}}>
+							cardId:<input name=cardId>
+							<input type=submit value='+'>
+						</form>
+					</td>
+				</tr>
+				
                 {{range .Cards}}
                     <tr>
                         <td align="center" valign="middle">
@@ -47,12 +58,12 @@
                             <table width=100%>
                                 
                                 <tr>
+									<td>seq:{{.Key}}</td>
                                     <td>{{.Name}}</td>
+									<td>{{.Type}}</td>
                                     <td>{{.AtkType}}</td>
                                     <td>Level:{{.Level}}</td>
-                                    <td>P:{{.Power}}</td>
-                                    <td>M:{{.Magic}}</td>
-                                    <td>W:{{.Weight}}</td>
+									<td>W:{{.Weight}}</td>
                                 </tr>
                                 
                                 <tr>
@@ -60,12 +71,11 @@
                                 </tr>
                                 
                                 <tr>
+									<td>P:{{.Power}}</td>
+                                    <td>M:{{.Magic}}</td>
                                     <td>{{.Action}}</td>
 									<td>{{.ActionType}}</td>
                                     <td>{{.ActionCost}}</td>
-                                    <td>{{.Type}}</td>
-                                    <td>{{.Tag}}</td>
-                                    <td>-</td>
                                 </td>
                                 
                                 <tr>
@@ -80,6 +90,8 @@
                 <tr>
                     <td colspan=2 align="center" valign="middle">所有牌</td>
                 </tr>
+				
+				
                 
                 {{range .AllCards}}
                     <tr>

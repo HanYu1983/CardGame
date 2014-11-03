@@ -5,6 +5,7 @@ import (
     "strconv"
     "sort"
 	"lib/tool"
+	"appengine/datastore"
 )
 
 type QueryCardPageModel struct {
@@ -52,7 +53,7 @@ func AddCardSuit(sys tool.ISystem) interface{} {
 
 type EditCardSuitPageModel struct{
     CardSuit CardSuitEntity
-    Cards []CardEntity
+    Cards []interface{}
     AllCards []interface{}
 }
 
@@ -67,14 +68,22 @@ func EditCardSuitPage(sys tool.ISystem) interface{} {
     
     cardSuit := csr.Read(sys, csr.GetKey(sys, key, nil)).(CardSuitEntity)
     model := EditCardSuitPageModel{CardSuit: cardSuit}
-    model.AllCards = cr.ReadAll(sys, cr.NewQuery(sys))
+    //model.AllCards = cr.ReadAll(sys, cr.NewQuery(sys))
     
     sort.Sort(tool.ByTypeInt64(cardSuit.CardIds))
     
-    for _, cardId := range cardSuit.CardIds {
-        model.Cards = append( model.Cards, cr.Read(sys, cr.GetKey(sys, cardId, nil)).(CardEntity) )
+	keys := []*datastore.Key{}
+	for _, cardId := range cardSuit.CardIds {
+		keys = append( keys, cr.GetKey(sys, cardId, nil) )
     }
-    
+	cards := cr.ReadMulti( sys, keys )
+	for idx, card := range cards {
+		c := card.(CardEntity)
+		c.Key = int64(idx + 1)
+		cards[idx] = c
+	}
+	model.Cards = cards
+	
     w.Header().Set("Content-Type", "text/html")
     tool.TemplateWithFile("query card", "tmpl/EditCardSuit.html").Execute(w, model)
     return tool.CustomView
@@ -89,6 +98,7 @@ func ModifyCardWithCardSuit(sys tool.ISystem) interface{} {
     ty := r.Form["type"][0]
     key, _ := strconv.ParseInt(r.Form["key"][0], 10, 64)
     
+	var cr ICardDAO = GetApp().GetCardDAO(r)
     var csr ICardSuitDAO = GetApp().GetCardSuitDAO(r)
     cardSuit := csr.Read(sys, csr.GetKey(sys, key, nil)).(CardSuitEntity)
     
@@ -106,7 +116,9 @@ func ModifyCardWithCardSuit(sys tool.ISystem) interface{} {
         
     case "add":
         tool.VerifyParam(r, "cardId", tool.ParamNotNil())
-        cardId, _ := strconv.ParseInt(r.Form["cardId"][0], 10, 64) 
+        cardId, _ := strconv.ParseInt(r.Form["cardId"][0], 10, 64)
+		// check validation, panic if no card
+		cr.Read(sys, cr.GetKey(sys, cardId, nil))
         cardSuit.CardIds = append(cardSuit.CardIds, cardId)
         csr.Update(sys, csr.GetKey(sys, key, nil), cardSuit)
         break
