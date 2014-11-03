@@ -1,0 +1,271 @@
+﻿<html>
+	<head>
+		<script src='lib/jquery-1.7.2.js'></script>
+		
+<script>
+
+jQuery(function(){
+
+	
+	
+	function withPattern(pattern){
+		return {
+			createCard: function( card ){
+				var temp = pattern.clone()
+				temp.find( '.name' ).html( card.Name );
+				temp.find( '.content' ).html( card.Content );
+				temp.find( '.action' ).html( card.Action );
+				temp.find( '.power' ).html( card.Power );
+				temp.find( '.magic' ).html( card.Magic );
+				temp.find( '.type' ).html( card.AtkType );
+				temp.find( '.card_type' ).html( card.Type );
+				temp.find( '.action_cost' ).html( card.ActionCost );
+				temp.find( '.action_type' ).html( card.ActionType );
+				temp.find( '.action_content' ).html( card.ActionContent );
+				temp.find( '.weight' ).html( '重' + card.Weight );
+				temp.find( '.id' ).html( card.Key );
+				temp.find( '.level' ).html( '星' + card.Level );
+				temp.find( '.tag' ).html( card.Tag );
+				return temp
+			}
+		}
+	}
+	
+	function withService(service){	
+		function fetchWithInfo( url, data ){
+			var _root = $.when($.ajax(queryPath, {type:'get', data: data}))
+			var done = function( fn ){
+				_root.done( function(data){
+					fn( service, data)
+				})
+			}
+			var fail = function( fn ){
+				_root.fail( fn )
+			}
+			var promise = {
+				done: function( fn ){
+					_root.done( function(data){
+						fn( service, data )
+					})
+					return this
+				},
+				fail: function( fn ){
+					_root.fail( fn )
+					return this
+				}
+			}
+			return promise
+		}
+		return {
+			fetchWithInfo: fetchWithInfo
+		}
+	}
+	
+	function getSearchForm(root){
+		var form = root.find('#searchForm')
+		var submit = form.find('#submit')
+		return {
+			getData: function(){
+				return form.serialize()
+			},
+			bindSubmit: function( fn ){
+				submit.click( fn )
+			}
+		}
+	}
+	
+	var queryPath = '../Func'
+	
+	var pattern = (function(){
+		var ret = $('#pattern').clone()
+		ret.css('display', 'inline')
+		return ret
+	})()
+	
+	var viewer = $('#viewer')
+	var searchForm = getSearchForm($('body'))
+	
+	searchForm.bindSubmit( function(){
+		function dataWithCmd(cmd){
+			function withInitObject( obj ){
+				function parseAndFilterEmpty( data ){
+					var pairs = data.split('&')
+					for( var idx in pairs ){
+						var pair = pairs[idx]
+						var kv = pair.split('=')
+						var k = kv[0]
+						var v = kv[1]
+						var hasValue = v != '-' && v != ''
+						if( hasValue ){
+							//serialize會自動encodeURI, 所以反解回去
+							obj[k] = decodeURI(v)
+						}
+					}
+					return obj
+				}
+				return {
+					parseAndFilterEmpty: parseAndFilterEmpty
+				}
+			}
+			return withInitObject({ cmd: cmd }).parseAndFilterEmpty(searchForm.getData())
+		}
+	
+		withService({ viewer: viewer }).fetchWithInfo(queryPath, dataWithCmd('QueryCard')).done( function( service, data ){
+			viewer = service.viewer
+			viewer.empty()
+			for( var idx in data.Info ){
+				var info = data.Info[idx]
+				viewer.append(withPattern(pattern).createCard(info))
+			}
+		})
+		return false
+	})
+	
+	
+	
+})
+
+
+</script>
+		<link type='text/css', rel='stylesheet', href='css/pattern1.css'/>
+	</head>
+	
+	<body>
+	
+		<form id='searchForm' action='../Func'>
+			<input type=hidden name=cmd value=QueryCard>
+			<div class='cardInput'>
+				<div class='info weight'>
+					武器重量
+					<select name='weight'>
+						<option>-</option>
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+					</select>
+				</div>
+				<div class='info type'>
+					攻擊類型
+					<select name='atkType'>
+                        <option>-</option>
+						<option>格鬥</option>
+						<option>斬擊</option>
+						<option>刺擊</option>
+						<option>打擊</option>
+						<option>生物</option>
+					</select>
+				</div>
+				<div class='info level'>
+					武器星級
+					<select name='level'>
+						<option>-</option>
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+					</select>
+				</div>
+				<div class='outline info card_type'>
+					武器種類
+					<select name='type'>
+                        <option>-</option>
+                        
+						<option>拳</option>
+                        <option>小刀</option>
+						<option>鞋</option>
+						
+                        <option>單手棍</option>
+						<option>單手劍</option>
+						<option>單手刀</option>
+                        
+                        <option>雙手棍</option>
+                        <option>雙手槍</option>
+						<option>雙手刀</option>
+                        
+                        <option>雙手鐮</option>
+						<option>雙手劍</option>
+						<option>雙手斧</option>
+                        
+                        <option>銃</option>
+                        <option>投具</option>
+						<option>生物</option>
+						<option>盾</option>
+                        <option>防具</option>
+					</select>
+				</div>
+				<!--
+				<div class='outline info name'>
+					武器名稱
+					<input name='name'>
+				</div>
+				-->
+				<!--
+				<div class='outline info power'>
+					武器外功
+					<input name='power'>
+				</div>
+				<div class='outline info magic'>
+					武器內功
+					<input name='magic'>
+				</div>
+				-->
+				<!--
+				<div class='outline info content'>
+					武器內文
+					 <textarea style='width:300px; height:100px;' name='content'></textarea>
+				</div>
+				<div class='outline info action'>
+					指令名稱
+					<input name='action'>
+				</div>
+				-->
+				<div class='outline info action_type'>
+					指令種類
+					<select name='actionType'>
+                        <option>-</option>
+						<option>攻招</option>
+						<option>近招</option>
+                        <option>遠招</option>
+						<option>反應</option>
+                        <option>氣功</option>
+						<option>氣場</option>
+					</select>
+				</div>
+				<!--
+				<div class='info action_cost'>
+					指令消費
+					<input name='actionCost'>
+				</div>
+				-->
+				<!--
+				<div class='outline info action_content'>
+					指令內文
+					<textarea style='width:300px; height:100px;' name='actionContent'></textarea>
+				</div>
+				-->
+			</div>
+			<input id='submit' type=submit>
+		</form>
+		
+		<div id='viewer' style='width=100%'></div>
+	
+		<div id='pattern' class='outline cardroot' style='display: none'>
+			<div class='positionfix'>
+				<div class='info weight'>weight</div>
+				<div class='info type'>type</div>
+				<div class='info level'>level</div>
+				<div class='outline info card_type'>card_type</div>
+				<div class='outline info name'>name</div>
+				<div class='outline info power'>power</div>
+				<div class='outline info magic'>magic</div>
+				<div class='outline info content'>content</div>
+				<div class='outline info action'>action</div>
+				<div class='outline info action_type'>action_type</div>
+				<div class='info action_cost'>action_cost</div>
+				<div class='outline info action_content'>action_content</div>
+				<div class='info tag'>tag</div>
+				<div class='info id'>id</div>
+			</div>
+		</div>
+	</body>
+</html>

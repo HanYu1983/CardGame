@@ -12,6 +12,14 @@ indexes:
 
 - kind: Card
   properties:
+  - name: AtkType
+  - name: Level
+  - name: Type
+  - name: Weight
+  - name: ActionContent
+
+- kind: Card
+  properties:
   - name: Type
   - name: Level
 
@@ -20,3 +28,8 @@ indexes:
   - name: Type
   - name: Level
   - name: AtkType
+
+- kind: Card
+  properties:
+  - name: Weight
+  - name: Type

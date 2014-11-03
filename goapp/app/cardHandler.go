@@ -81,8 +81,59 @@ func QueryCard(sys tool.ISystem) interface{} {
         }
         return tool.Success(cards)
     }
+	
+	query := cr.NewQuery(sys)
+	
+	hasType := len( r.Form["type"] ) > 0 
+	if hasType {
+		for _, tp := range r.Form["type"] {
+			query = query.Filter("Type = ", tp)
+		}
+	}
+	
+	hasWeight := len( r.Form["weight"] ) > 0 
+	if hasWeight {
+		for _, w := range r.Form["weight"] {
+			wi, _ := strconv.Atoi(w)
+			query = query.Filter("Weight =", wi)
+		}
+	}
+	
+	hasAtkType := len( r.Form["atkType"] ) > 0 
+	if hasAtkType {
+		for _, v := range r.Form["atkType"] {
+			query = query.Filter("AtkType =", v)
+		}
+	}
+	
+	hasLevel := len( r.Form["level"] ) > 0 
+	if hasLevel {
+		for _, v := range r.Form["level"] {
+			vi, _ := strconv.Atoi(v)
+			query = query.Filter("Level =", vi)
+		}
+	}
+	
+	hasOffset := len( r.Form["offset"] ) > 0 
+	if hasOffset {
+		offset, _ := strconv.Atoi( r.Form["offset"][0] )
+		query = query.Offset(offset)
+	}
+	
+	hasLimit := len( r.Form["limit"] ) > 0 
+	if hasLimit {
+		limit, _ := strconv.Atoi( r.Form["limit"][0] )
+		query = query.Limit(limit)
+	}
+	
+	hasActionContent := len( r.Form["actionContent"] ) > 0 
+	if hasActionContent {
+		for _, v := range r.Form["actionContent"] {
+			query = query.Filter("ActionContent >=", v)
+		}
+	}
     
-    var cards []interface{} = cr.ReadAll(sys, cr.NewQuery(sys))
+    var cards []interface{} = cr.ReadAll(sys, query)
     return tool.Success(cards)
 }
 
