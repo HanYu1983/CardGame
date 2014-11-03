@@ -106,6 +106,13 @@ func QueryCard(sys tool.ISystem) interface{} {
 		}
 	}
 	
+	hasActionType := len( r.Form["actionType"] ) > 0 
+	if hasActionType {
+		for _, v := range r.Form["actionType"] {
+			query = query.Filter("ActionType =", v)
+		}
+	}
+	
 	hasLevel := len( r.Form["level"] ) > 0 
 	if hasLevel {
 		for _, v := range r.Form["level"] {
