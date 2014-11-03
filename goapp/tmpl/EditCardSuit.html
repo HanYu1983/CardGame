@@ -46,8 +46,7 @@
 						</form>
 					</td>
 				</tr>
-				
-                {{range .Cards}}
+                {{range $i, $card := .Cards}}
                     <tr>
                         <td align="center" valign="middle">
                             <a href='Page?cmd=ModifyCardWithCardSuit&key={{$suitKey}}&cardId={{.Key}}&type=delete'>X</a>
@@ -56,30 +55,30 @@
                         </td>
                         <td>
                             <table width=100%>
-                                
                                 <tr>
-									<td>seq:{{.Key}}</td>
-                                    <td>{{.Name}}</td>
-									<td>{{.Type}}</td>
-                                    <td>{{.AtkType}}</td>
-                                    <td>Level:{{.Level}}</td>
-									<td>W:{{.Weight}}</td>
+									<td>seq:{{$i}}</td>
+                                    <td>{{$card.Name}}</td>
+									<td>{{$card.Type}}</td>
+                                    <td>{{$card.AtkType}}</td>
+                                    <td>Level:{{$card.Level}}</td>
+									<td>W:{{$card.Weight}}</td>
                                 </tr>
                                 
                                 <tr>
-                                    <td colspan=6>{{.Content}}</td>
+                                    <td colspan=6>{{$card.Content}}</td>
                                 </tr>
                                 
                                 <tr>
-									<td>P:{{.Power}}</td>
-                                    <td>M:{{.Magic}}</td>
-                                    <td>{{.Action}}</td>
-									<td>{{.ActionType}}</td>
-                                    <td>{{.ActionCost}}</td>
+									<td>P:{{$card.Power}}</td>
+                                    <td>M:{{$card.Magic}}</td>
+                                    <td>{{$card.Action}}</td>
+									<td>{{$card.ActionType}}</td>
+                                    <td>{{$card.ActionCost}}</td>
+									<td>key:{{$card.Key}}</td>
                                 </td>
                                 
                                 <tr>
-                                    <td colspan=6>{{.ActionContent}}</td>
+                                    <td colspan=6>{{$card.ActionContent}}</td>
                                 </td>
                                 
                             </table>

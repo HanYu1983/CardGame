@@ -76,14 +76,8 @@ func EditCardSuitPage(sys tool.ISystem) interface{} {
 	for _, cardId := range cardSuit.CardIds {
 		keys = append( keys, cr.GetKey(sys, cardId, nil) )
     }
-	cards := cr.ReadMulti( sys, keys )
-	for idx, card := range cards {
-		c := card.(CardEntity)
-		c.Key = int64(idx + 1)
-		cards[idx] = c
-	}
-	model.Cards = cards
-	
+	model.Cards = cr.ReadMulti( sys, keys )
+
     w.Header().Set("Content-Type", "text/html")
     tool.TemplateWithFile("query card", "tmpl/EditCardSuit.html").Execute(w, model)
     return tool.CustomView
