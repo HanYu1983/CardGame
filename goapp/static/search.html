@@ -5,8 +5,6 @@
 <script>
 
 jQuery(function(){
-
-	
 	
 	function withPattern(pattern){
 		return {
@@ -33,27 +31,14 @@ jQuery(function(){
 	
 	function withService(service){	
 		function fetchWithInfo( url, data ){
-			var _root = $.when($.ajax(queryPath, {type:'get', data: data}))
-			var done = function( fn ){
-				_root.done( function(data){
-					fn( service, data)
+			var promise = jQuery.Deferred()
+			$.when($.ajax(url, {type:'get', data: data}))
+				.done( function(data){
+					promise.resolve(service, data)
 				})
-			}
-			var fail = function( fn ){
-				_root.fail( fn )
-			}
-			var promise = {
-				done: function( fn ){
-					_root.done( function(data){
-						fn( service, data )
-					})
-					return this
-				},
-				fail: function( fn ){
-					_root.fail( fn )
-					return this
-				}
-			}
+				.fail( function(err){
+					promise.reject(err)
+				})
 			return promise
 		}
 		return {
@@ -65,11 +50,33 @@ jQuery(function(){
 		var form = root.find('#searchForm')
 		var submit = form.find('#submit')
 		return {
-			getData: function(){
+			serializeData: function(){
 				return form.serialize()
 			},
-			bindSubmit: function( fn ){
-				submit.click( fn )
+			getSearchData: function(){
+				var obj = {}
+				var pairs = this.serializeData().split('&')
+				for( var idx in pairs ){
+					var pair = pairs[idx]
+					var kv = pair.split('=')
+					var k = kv[0]
+					var v = kv[1]
+					var hasValue = v != '-' && v != ''
+					if( hasValue ){
+						//serialize會自動encodeURI, 所以反解回去
+						obj[k] = decodeURI(v)
+					}
+				}
+				return obj
+			},
+			submit: function(){
+				var p = jQuery.Deferred()
+				submit.click(function(){
+					p.resolve()
+					submit.unbind('click', arguments.callee)
+					return false
+				})
+				return p
 			}
 		}
 	}
@@ -85,44 +92,42 @@ jQuery(function(){
 	var viewer = $('#viewer')
 	var searchForm = getSearchForm($('body'))
 	
-	searchForm.bindSubmit( function(){
+	function fetchTheData(){
+		viewer.html('讀取中...')
 		function dataWithCmd(cmd){
-			function withInitObject( obj ){
-				function parseAndFilterEmpty( data ){
-					var pairs = data.split('&')
-					for( var idx in pairs ){
-						var pair = pairs[idx]
-						var kv = pair.split('=')
-						var k = kv[0]
-						var v = kv[1]
-						var hasValue = v != '-' && v != ''
-						if( hasValue ){
-							//serialize會自動encodeURI, 所以反解回去
-							obj[k] = decodeURI(v)
-						}
-					}
-					return obj
-				}
-				return {
-					parseAndFilterEmpty: parseAndFilterEmpty
-				}
-			}
-			return withInitObject({ cmd: cmd }).parseAndFilterEmpty(searchForm.getData())
+			var ret = searchForm.getSearchData()
+			ret.cmd = cmd
+			return ret
 		}
+		jQuery.when( withService({ viewer: viewer }).fetchWithInfo(queryPath, dataWithCmd('QueryCard')) )
+			.done( function(service, data){
+				viewer = service.viewer
+				viewer.empty()
+				var isNullData = data.Info == null || data.Info.length == 0
+				if( isNullData ){
+					viewer.html('沒有資料')
+				}else{
+					for( var idx in data.Info ){
+						var info = data.Info[idx]
+						viewer.append(withPattern(pattern).createCard(info))
+					}
+				}
+			})
+			.fail( function(err){
+				viewer = service.viewer
+				viewer.html('error')
+			})
+	}
 	
-		withService({ viewer: viewer }).fetchWithInfo(queryPath, dataWithCmd('QueryCard')).done( function( service, data ){
-			viewer = service.viewer
-			viewer.empty()
-			for( var idx in data.Info ){
-				var info = data.Info[idx]
-				viewer.append(withPattern(pattern).createCard(info))
-			}
-		})
-		return false
-	})
+	function rebind( searchForm, fn ){
+		return function(){
+			fn()
+			searchForm.submit().done( arguments.callee )
+		}
+	}
 	
-	
-	
+	jQuery.when( searchForm.submit() )
+		.done( rebind( searchForm, fetchTheData ) )
 })
 
 
@@ -134,8 +139,8 @@ jQuery(function(){
 	
 		<form id='searchForm' action='../Func'>
 			<input type=hidden name=cmd value=QueryCard>
-			<div class='cardInput'>
-				<div class='info weight'>
+			<div>
+				<div>
 					武器重量
 					<select name='weight'>
 						<option>-</option>
@@ -145,7 +150,7 @@ jQuery(function(){
 						<option>4</option>
 					</select>
 				</div>
-				<div class='info type'>
+				<div>
 					攻擊類型
 					<select name='atkType'>
                         <option>-</option>
@@ -156,7 +161,7 @@ jQuery(function(){
 						<option>生物</option>
 					</select>
 				</div>
-				<div class='info level'>
+				<div>
 					武器星級
 					<select name='level'>
 						<option>-</option>
@@ -165,7 +170,7 @@ jQuery(function(){
 						<option>3</option>
 					</select>
 				</div>
-				<div class='outline info card_type'>
+				<div>
 					武器種類
 					<select name='type'>
                         <option>-</option>
@@ -220,7 +225,7 @@ jQuery(function(){
 					<input name='action'>
 				</div>
 				-->
-				<div class='outline info action_type'>
+				<div>
 					指令種類
 					<select name='actionType'>
                         <option>-</option>
